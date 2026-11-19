@@ -1,0 +1,19 @@
+{
+  "phase": "10-rendezvous-braking",
+  "input_sha256": "3e755d8297c50fbae5dfa23f5aa365ac55728e2fae5062e57fc8c72af1b20b55",
+  "output_sha256": "c6a41415f129e4b253cfe57d5136d1edbda22bbcc793dc2add7dcd7d250c276a",
+  "parent": "09-braking-point",
+  "seconds": 600.0,
+  "step": 0.0625,
+  "actual_saved_mjd": 39199.5992727141,
+  "fuel_index0_kg": 110.40041360811271,
+  "mass_kg": 3541.4004136081126,
+  "final_altitude_m": 349568.990766583,
+  "final_speed_m_s": 7266.001159296207,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "3a400a8fa490107267f0fbdd14cf6e9778e2aa96d1669dcda5a21477522d1232",
+  "pilot_sha256": "43f5aa0d23a7e99e5b3f7de11235e2e94095fee3c5b517ae12edc7ff63dc0d83",
+  "parent_output_sha256": "a1d07c27a03978c33a3433ff97dadd0415e03be0d89f85257c471215d63c2e4c",
+  "peak_drag_g": 2.528585955543355e-08
+}

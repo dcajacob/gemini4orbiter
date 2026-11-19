@@ -1,0 +1,23 @@
+{
+  "phase": "22-splashdown",
+  "input_sha256": "60828b5dfec434347f241b96efca286d331a44c1e8e01b1ed9a9a7f77ffa9f1c",
+  "output_sha256": "9508e7690fc9ef9c230e59ce514ca14c8882930bb552645026dddb6e13c8d885",
+  "parent": "21-parachute-descent",
+  "seconds": 2000.0,
+  "step": 0.125,
+  "actual_saved_mjd": 39199.7238097508,
+  "fuel_index0_kg": 32.30521,
+  "mass_kg": 1890.30521,
+  "final_altitude_m": -0.2360798455774784,
+  "final_speed_m_s": 0.0,
+  "ground_contact": true,
+  "docked_to": "",
+  "evidence_state_sha256": "046b6891e78e0fcaa9dece3fa07c71e878a404289876d955e779488c00f7a0c2",
+  "pilot_sha256": "9a35b2d6cd52970b1f3bf13720f858eb1d718442e9993b3279fc4d66087c4c7b",
+  "parent_output_sha256": "e0163b45976192422f5f32e1e667ce3cad4648645d20cc49b09be14a5f73d555",
+  "peak_drag_g": 0.9983363987396722,
+  "first_contact_seconds": 1583.375,
+  "contact_speed_m_s": 6.366929179761935,
+  "latitude_deg": 19.77612678632985,
+  "longitude_deg": 142.12889961796884
+}

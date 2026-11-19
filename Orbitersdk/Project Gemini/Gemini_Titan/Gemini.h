@@ -541,6 +541,7 @@ private:
 	void SetStage(VESSEL2 *vessel);
 	void SetRetroStage(VESSEL2 *vessel);
 	void SetCapsuleStage(VESSEL2 *vessel);
+	void RestoreParachute(VESSEL2 *vessel, bool main);
 	void JettisonEquipment(VESSEL2 *vessel);
 	void JettisonAdapter(VESSEL2 *vessel);
 	void JettisonNose(VESSEL2 *vessel);
@@ -789,7 +790,17 @@ void Gemini::ParseLine (VESSEL2 *vessel, char *line, void *vs)
 {
 	double tempD = 0.0;
 	int    tempI = 0;
-    if (!strnicmp (line, "RCS_JETS", 8)) {
+    if (!strnicmp(line, "DROGUE_STATE", 12)) {
+        double elapsed;
+        if (sscanf(line+12, "%d%lf%lf", &tempI, &tempD, &elapsed)==3 && tempI>=0 && tempI<=5 && tempD>=0 && tempD<=1) {
+            drogue_status=static_cast<DrogueStatus>(tempI);drogue_proc=tempD;drogue_reefed=-elapsed;
+        }
+    } else if (!strnicmp(line, "MAIN_CHUTE_STATE", 16)) {
+        double elapsed;
+        if (sscanf(line+16, "%d%lf%lf", &tempI, &tempD, &elapsed)==3 && tempI>=0 && tempI<=5 && tempD>=0 && tempD<=1) {
+            chute_status=static_cast<ChuteStatus>(tempI);chute_proc=tempD;chute_reefed=-elapsed;
+        }
+    } else if (!strnicmp (line, "RCS_JETS", 8)) {
         sscanf (line+8, "%lf", &tempD);
 		if (tempD == 1.0)
 			bRCSJets=true;
@@ -817,7 +828,7 @@ void Gemini::ParseLine (VESSEL2 *vessel, char *line, void *vs)
 			bAdapterJettisoned=true;
 		else
 			bAdapterJettisoned=false;
-    } else if (!strnicmp (line, "RETRO", 5)) 	{
+    } else if (!strnicmp (line, "RETRO ", 6)) 	{
         sscanf (line+5, "%lf", &tempD);
 		if (tempD == 1.0)
 			bRetro=true;
@@ -894,6 +905,13 @@ void Gemini::SaveState (VESSEL2 *vessel, FILEHANDLE scn)
 	oapiWriteScenario_int   (scn, "LINE1_STATUS",      line1_status);
 	oapiWriteScenario_float (scn, "LINE1_PROC",        line1_proc);
 	oapiWriteScenario_float (scn, "DOORS_JETTISONED",  bDoorsJettisoned );
+    char parachute[128];
+    snprintf(parachute,sizeof(parachute),"%d %.12g %.12g",int(drogue_status),drogue_proc,
+        drogue_status==DROGUE_REEFED ? oapiGetSimTime()-drogue_reefed : 0.0);
+    oapiWriteScenario_string(scn,"DROGUE_STATE",parachute);
+    snprintf(parachute,sizeof(parachute),"%d %.12g %.12g",int(chute_status),chute_proc,
+        chute_status==CHUTE_REEFED ? oapiGetSimTime()-chute_reefed : 0.0);
+    oapiWriteScenario_string(scn,"MAIN_CHUTE_STATE",parachute);
 
 	char name[256];
 	OBJHANDLE hvessel;
@@ -1214,6 +1232,7 @@ void Gemini::DoCapsuleThrusters(VESSEL2 *vessel, double simdt)
 	VECTOR3 ang_vel = {0.0, 0.0, 0.0};
 	DWORD mode;
 	if (!hasFocus) return;
+	vessel->GetAngularVel(ang_vel);
 	vessel->SetThrusterGroupLevel(oams_pitch_up, 0.0);
 	vessel->SetThrusterGroupLevel(oams_pitch_down, 0.0);
 	vessel->SetThrusterGroupLevel(oams_yaw_left, 0.0);
@@ -1442,6 +1461,18 @@ void Gemini::Animate (VESSEL2 *vessel, double simt)
 
 void Gemini::VisualCreated (VESSEL2 *vessel, VISHANDLE vis, int refcount)
 {
+    // A new visual starts with the original, fully expanded canopy mesh.
+    const bool main=bMainDeployed && !bMainJettisoned;
+    const bool drogue=bDrogueDeployed && !bDrogueJettisoned;
+    if (main || drogue) {
+        const int state=main ? int(chute_status) : int(drogue_status);
+        const double proc=main ? chute_proc : drogue_proc;
+        MESHGROUP_TRANSFORM mt={};mt.nmesh=16;mt.ngrp=-1;mt.transform=MESHGROUP_TRANSFORM::SCALE;
+        mt.P.scaleparam.scale.x=mt.P.scaleparam.scale.y=state<=3 ? .12 : (state==4 ? proc : 1.0);
+        mt.P.scaleparam.scale.z=state==2 ? proc : 1.0;
+        vessel->MeshgroupTransform(vis,mt);
+        vchute_proc=chute_proc;vdrogue_proc=drogue_proc;
+    }
 	vdoor_proc=0.0;
 	UpdateMesh(vessel);
 };
@@ -1470,6 +1501,14 @@ int Gemini::ConsumeDirectKey (VESSEL2 *vessel, char *keystate)
 
 int Gemini::ConsumeBufferedKey (VESSEL2 *vessel, DWORD key, bool down, char *kstate)
 {
+#ifdef GEMINI_NATIVE_ORBITER
+	// Keyboard access to the original seven-position attitude selector.
+	if (down && KEYMOD_ALT(kstate) && key >= OAPI_KEY_1 && key <= OAPI_KEY_7) {
+		ControlPanel->attitude_mode = int(key - OAPI_KEY_1 + 1);
+		return 1;
+	}
+#endif
+
 	int Cmd = 0;
 	if (down == 0) return 0;
 	if (KEYMOD_SHIFT (kstate)) 
@@ -1931,6 +1970,7 @@ void Gemini::SetCapsuleStage(VESSEL2 *vessel)
 		AddNose(vessel);
 	} else if (bMainDeployed && !bMainJettisoned) {
 		SetMainChuteStage(vessel);
+        RestoreParachute(vessel,true);
 	}else if (bDrogueDeployed && bDrogueJettisoned) {
 		vessel->ClearMeshes();
 		AddCapsule(vessel);
@@ -1953,8 +1993,7 @@ void Gemini::SetCapsuleStage(VESSEL2 *vessel)
 		}
 		AddNose(vessel);
 		AddDrogue(vessel);
-		vessel->SetCrossSections (_V(2.8,2.8,GEMINI_CHUTE_DROGUE));
-		vessel->SetCW (0.1, 1.5, .3,.3);
+        RestoreParachute(vessel,false);
 	} else {
 		vessel->ClearMeshes();
 		AddCapsule(vessel);
@@ -1968,6 +2007,34 @@ void Gemini::SetCapsuleStage(VESSEL2 *vessel)
 		AddNose(vessel);
 	}
 };
+
+// Restore both physics and the animation phase. Old saves only contain the
+// deployment flags, so infer a fully open canopy for those files.
+void Gemini::RestoreParachute(VESSEL2 *vessel, bool main)
+{
+    int state=main ? int(chute_status) : int(drogue_status);
+    if (state==0) state=5;
+    double &proc=main ? chute_proc : drogue_proc;
+    if (state==5) proc=1.0;
+    double fraction=1.0;
+    if (state==1) fraction=0.0;
+    if (state==2) fraction=.12*proc;
+    if (state==3) fraction=.12;
+    if (state==4) fraction=.12+.88*proc;
+    vessel->SetSize(main ? 12 : 9);
+    vessel->SetCrossSections(_V(2.8,2.8,(main ? GEMINI_CHUTE_MAIN : GEMINI_CHUTE_DROGUE)*fraction));
+    vessel->SetCW(.1,1.5,.3,.3);
+    if (main) {
+        vessel->ClearMeshes();AddGeminiCapsule(vessel,false);AddChute(vessel);
+        chute_status=static_cast<ChuteStatus>(state);
+        chute_moving=state>=2 && state<=4;vchute_proc=proc;
+    } else {
+        vessel->SetLiftCoeffFunc(0);
+        drogue_status=static_cast<DrogueStatus>(state);
+        drogue_moving=state>=2 && state<=4;vdrogue_proc=proc;
+    }
+    if (state>=2 && state<=4) vessel->RegisterAnimation();
+}
 
 void Gemini::SetMainChuteStage(VESSEL2 *vessel)
 {
@@ -2069,7 +2136,7 @@ void Gemini::CreateGeminiThrusters(VESSEL2 *vessel)
 	vessel->ClearThrusterDefinitions();
 
 	fuel_oams = vessel->CreatePropellantResource(GEMINI_FUEL_MASS_OAMS, GEMINI_FUEL_MASS_OAMS);
-	fuel_rcs = vessel->CreatePropellantResource(GEMINI_FUEL_MASS_OAMS, GEMINI_FUEL_MASS_OAMS);
+	fuel_rcs = vessel->CreatePropellantResource(GEMINI_FUEL_MASS_RCS, GEMINI_FUEL_MASS_RCS);
 	for (int i = 0; i < 4; i++)
 		fuel_retro[i] = vessel->CreatePropellantResource(GEMINI_FUEL_MASS_RETRO, GEMINI_FUEL_MASS_RETRO);
 
@@ -2361,61 +2428,61 @@ void Gemini::SetRCS(VESSEL2 *vessel) {
 	th_group[0] = thruster_rcs[0];
 	th_group[1] = thruster_rcs[1];
 	nThrust = 2;
-	rcs_pitch_up1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_pitch_up1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 	th_group[0] = thruster_rcs[2];
 	th_group[1] = thruster_rcs[3];
 	nThrust = 2;
-	rcs_pitch_up2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_pitch_up2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 	
 	th_group[0] = thruster_rcs[4];
 	th_group[1] = thruster_rcs[5];
 	nThrust = 2;
-	rcs_pitch_down1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_pitch_down1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[6];
 	th_group[1] = thruster_rcs[7];
 	nThrust = 2;
-	rcs_pitch_down2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_pitch_down2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[8];
 	th_group[1] = thruster_rcs[9];
 	nThrust = 2;
-	rcs_yaw_right1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_yaw_right1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[10];
 	th_group[1] = thruster_rcs[11];
 	nThrust = 2;
-	rcs_yaw_right2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_yaw_right2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 	
 	th_group[0] = thruster_rcs[12];
 	th_group[1] = thruster_rcs[13];
 	nThrust = 2;
-	rcs_yaw_left1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_yaw_left1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[14];
 	th_group[1] = thruster_rcs[15];
 	nThrust = 2;
-	rcs_yaw_left2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_yaw_left2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 	
 	th_group[0] = thruster_rcs[24];
 	th_group[1] = thruster_rcs[25];
 	nThrust = 2;
-	rcs_roll_right1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_roll_right1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[26];
 	th_group[1] = thruster_rcs[27];
 	nThrust = 2;
-	rcs_roll_right2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_roll_right2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 	
 	th_group[0] = thruster_rcs[28];
 	th_group[1] = thruster_rcs[29];
 	nThrust = 2;
-	rcs_roll_left1 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_roll_left1 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 	th_group[0] = thruster_rcs[30];
 	th_group[1] = thruster_rcs[31];
 	nThrust = 2;
-	rcs_roll_left2 = vessel->CreateThrusterGroup(th_group,nThrust,THGROUP_USER);
+	rcs_roll_left2 = GeminiUserThrusterGroup(vessel,th_group,nThrust);
 
 }
 
@@ -2426,49 +2493,49 @@ void Gemini::SetOAMS(VESSEL2 *vessel)
 
 	th_group[0] = thruster_oams[2];
 	th_group[1] = thruster_oams[3];
-	oams_yaw_left = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_yaw_left = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[6];
 	th_group[1] = thruster_oams[7];
-	oams_yaw_right = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_yaw_right = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[0];
 	th_group[1] = thruster_oams[5];
-	oams_roll_left = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_roll_left = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[4];
 	th_group[1] = thruster_oams[1];
-	oams_roll_right = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_roll_right = GeminiUserThrusterGroup(vessel,th_group,2);
 
 	
 	th_group[0] = thruster_oams[16];
 	th_group[1] = thruster_oams[17];
-	oams_pitch_up = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_pitch_up = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[18];
 	th_group[1] = thruster_oams[19];
-	oams_pitch_down = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_pitch_down = GeminiUserThrusterGroup(vessel,th_group,2);
 
 
 	th_group[0] = thruster_oams[10];
 	th_group[1] = thruster_oams[11];
-	oams_back = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_back = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[8];
 	th_group[1] = thruster_oams[9];
-	oams_forward  = vessel->CreateThrusterGroup(th_group,2,THGROUP_USER);
+	oams_forward  = GeminiUserThrusterGroup(vessel,th_group,2);
 	
 	th_group[0] = thruster_oams[14];
-	oams_left = vessel->CreateThrusterGroup(th_group,1,THGROUP_USER);
+	oams_left = GeminiUserThrusterGroup(vessel,th_group,1);
 	
 	th_group[0] = thruster_oams[15];
-	oams_right = vessel->CreateThrusterGroup(th_group,1,THGROUP_USER);
+	oams_right = GeminiUserThrusterGroup(vessel,th_group,1);
 	
 	th_group[0] = thruster_oams[12];
-	oams_up = vessel->CreateThrusterGroup(th_group,1,THGROUP_USER);
+	oams_up = GeminiUserThrusterGroup(vessel,th_group,1);
 	 
 	th_group[0] = thruster_oams[13];
-	oams_down = vessel->CreateThrusterGroup(th_group,1,THGROUP_USER);
+	oams_down = GeminiUserThrusterGroup(vessel,th_group,1);
 
 }
 

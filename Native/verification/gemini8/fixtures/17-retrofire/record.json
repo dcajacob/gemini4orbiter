@@ -1,0 +1,19 @@
+{
+  "phase": "17-retrofire",
+  "input_sha256": "87f5d6c884e3171358edb2595fe4fe2df314cadcaffbdddf305021f4f34dd3d6",
+  "output_sha256": "5ea6c2c8180e26258d6b3922f9d0f5db90bb63312f13a09956a3c41c3214bedd",
+  "parent": "16-retro-attitude",
+  "seconds": 60.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.6624671584,
+  "fuel_index0_kg": 34.98961538461538,
+  "mass_kg": 2472.9896153846153,
+  "final_altitude_m": 350070.62372177467,
+  "final_speed_m_s": 7180.213134816754,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "1bde1a7959fbc78728f97a1bc1d5529145f2259b3ee9f28f2f09ea7ca70a0f48",
+  "pilot_sha256": "76b6d0eb35c2885aaecdc839fdd88c7d658aea942d879f361fbc3cb7f15f579a",
+  "parent_output_sha256": "3de257e243e8a1009551b64529dbfe6d1d27421033896796b4605644c8d99345",
+  "peak_drag_g": 5.433237185698795e-09
+}

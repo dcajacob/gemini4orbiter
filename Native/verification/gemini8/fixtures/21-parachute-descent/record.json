@@ -1,0 +1,19 @@
+{
+  "phase": "21-parachute-descent",
+  "input_sha256": "3482bc284bc95471c64839820d0178eb8c7afa198343840fecb9a970cacfebd2",
+  "output_sha256": "e0163b45976192422f5f32e1e667ce3cad4648645d20cc49b09be14a5f73d555",
+  "parent": "20-reentry",
+  "seconds": 600.0,
+  "step": 0.125,
+  "actual_saved_mjd": 39199.7006616027,
+  "fuel_index0_kg": 32.30521,
+  "mass_kg": 1890.30521,
+  "final_altitude_m": 2665.581024972722,
+  "final_speed_m_s": 1.7987875878950137,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "b92f2c07a8bd4fccc02a8516e17bde66c499a7359eb582f2ebca17de75c43908",
+  "pilot_sha256": "e86df3150bf6241a6a2838851eba66b13811bbc6df6f85c1bb872de088ca21f2",
+  "parent_output_sha256": "503e9b8f2d3e8b00e3ba151dcb0b73aea3502995e4d49312d63de1952d951e49",
+  "peak_drag_g": 2.300234364317734
+}

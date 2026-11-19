@@ -11,7 +11,8 @@ cases=[
  ('agena-undock','Project Gemini/Gemini Docked.scn',480,.0625,[(0,'key',38),(1,'key',-38),(16,'key',36),(17,'key',-36)]),
  ('eva','Project Gemini/Gemini Orbit.scn',960,.0625,[(0,'key',25),(1,'key',-25),(160,'key',18),(161,'key',-18)]),
  ('pad-abort','Earth 1962/Gemini III.scn',160,.0625,[(0,'key',18),(1,'key',-18)]),
- ('reentry','Project Gemini/Gemini Reentry.scn',19200,.125,[]),
+ ('reentry','Project Gemini/Gemini Reentry.scn',40000,.125,[]),
+ ('attitude-control','Project Gemini/Gemini Orbit.scn',256,.03125,[(0,'attitude',1),(1,'key',56),(2,'key',6),(3,'key',-6),(4,'key',-56),(8,'key',80),(40,'key',-80)]),
 ]
 if len(sys.argv)>3:cases=[c for c in cases if c[0] in sys.argv[3:]]
 results=[]
@@ -30,7 +31,13 @@ for name,scenario,ticks,step,commands in cases:
  by_name={r['object']:r for r in final}
  assert final and all(math.isfinite(float(r[k])) for r in final for k in ['altitude_mean','airspeed','mass','fuel'])
  saved=(case/'saved.scn').read_text()
- if name=='orbit-operations':
+ if name=='attitude-control':
+  samples=[r for r in rows if r['object']=='Gemini' and int(r['tick'])<=40]
+  assert .03 < max(float(r['wx']) for r in samples) < .04, 'Incorrect pitch impulse response'
+  assert max(abs(float(r['wy'])) for r in samples)<.005
+  assert max(abs(float(r['wz'])) for r in samples)<.005
+  assert abs(float(samples[0]['mass'])-3851)<.01, 'Incorrect capsule RCS capacity'
+ elif name=='orbit-operations':
   assert 'Gemini-BEACON' in by_name and float(by_name['Gemini']['fuel'])<419.9
  elif name=='agena-undock':
   assert not by_name['GEMINI']['dock'] and not by_name['GATV']['dock']

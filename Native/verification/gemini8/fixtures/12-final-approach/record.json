@@ -1,0 +1,19 @@
+{
+  "phase": "12-final-approach",
+  "input_sha256": "f12ab99b76f889f6c9138e314d2d3a9cad9b1b5e67db81ee9325f5fc10d245a1",
+  "output_sha256": "004578d85dada032094220e0f2be95e335f2e6493222dd3be9058de5016c7017",
+  "parent": "11-terminal-approach",
+  "seconds": 500.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.6177912326,
+  "fuel_index0_kg": 61.95271795787414,
+  "mass_kg": 3492.952717957874,
+  "final_altitude_m": 339889.06849081535,
+  "final_speed_m_s": 7281.385314380628,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "8541f5b04eeb39b43b0b2b918bfdebbc978318dab7291fbf14f1d2cfa7dce965",
+  "pilot_sha256": "02c1f9f0d8cac702854bc71cfa2505c506255d804ef6e0fd74d7ae309a6afbc3",
+  "parent_output_sha256": "78baa13021e24461c91d5a3a13df56970c69f03bad4f0cb76d9048e3cf73bff7",
+  "peak_drag_g": 1.7728254623702288e-08
+}

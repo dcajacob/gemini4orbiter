@@ -1,0 +1,17 @@
+Server String: unix:/tmp/tmp.YzLHWYwwGH/pulse.sock
+Library Protocol Version: 35
+Server Protocol Version: 35
+Is Local: yes
+Client Index: 0
+Tile Size: 65472
+User Name: dan
+Host Name: dan-xps16
+Server Name: pulseaudio
+Server Version: 17.0
+Default Sample Specification: s16le 2ch 44100Hz
+Default Channel Map: front-left,front-right
+Default Sink: gemini_test
+Default Source: gemini_test.monitor
+Cookie: 83a7:83dc
+Volume: front-left: 3276 /   5% / -78.07 dB,   front-right: 3276 /   5% / -78.07 dB
+        balance 0.00

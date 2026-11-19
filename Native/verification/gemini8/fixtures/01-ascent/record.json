@@ -1,0 +1,17 @@
+{
+  "phase": "01-ascent",
+  "input_sha256": "7fcfa3bda7dc520eebb2cfee8146471b61f862843f14de956b4ae4a6d6868858",
+  "output_sha256": "e3ae96cdfa760260b75a3dae21c49ca4c42490a82d263d04558420abef45a7bf",
+  "parent": "Scenarios/Earth 1962/Gemini VIII.scn",
+  "seconds": 600,
+  "step": 0.0625,
+  "actual_saved_mjd": 39199.4509437211,
+  "fuel_index0_kg": 419.9532692307697,
+  "mass_kg": 3850.95326923077,
+  "final_altitude_m": 241906.76026751567,
+  "final_speed_m_s": 7351.821005095343,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "d202af3febcd4899d2b99d31af28e7c6277c6bfbf5f9c8c66570a7d40701988f",
+  "peak_drag_g": 0.027039293322765518
+}

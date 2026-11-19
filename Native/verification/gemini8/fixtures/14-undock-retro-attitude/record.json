@@ -1,0 +1,19 @@
+{
+  "phase": "14-undock-retro-attitude",
+  "input_sha256": "b5cfc7bce55b9b1f2c521fcdd15a79b1db68ca668e247989727430cd2e6e2a41",
+  "output_sha256": "12d449e62865be4c83a651324dee446601041faeecb4cdb90a2ec1eeddf92475",
+  "parent": "13-docking",
+  "seconds": 180.0,
+  "step": 0.0625,
+  "actual_saved_mjd": 39199.6256616029,
+  "fuel_index0_kg": 47.39416010988467,
+  "mass_kg": 3478.3941601098845,
+  "final_altitude_m": 337359.55985165574,
+  "final_speed_m_s": 7284.4430012340545,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "a3316c087d415f3f89da389f8f7790d125ea9bf58bdd5a7810ddef2be593d916",
+  "pilot_sha256": "9f6e5bd0d7d49616a65f18a2d5179551846e590ad0d83c440dd93fa8ef8f07d1",
+  "parent_output_sha256": "bd45d85ead3f77167d7fb875469ca259453c56f7d8039896a403aa4b32229dd4",
+  "peak_drag_g": 2.5319807782654012e-08
+}

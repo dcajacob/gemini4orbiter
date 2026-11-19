@@ -1,0 +1,19 @@
+{
+  "phase": "18-adapter-separation",
+  "input_sha256": "a854543fbde525c953847a35745a1f057e6d9b6ae132a6a743a6440a51de19dd",
+  "output_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+  "parent": "17-retrofire",
+  "seconds": 1800.0,
+  "step": 1.0,
+  "actual_saved_mjd": 39199.6833004917,
+  "fuel_index0_kg": 34.989605,
+  "mass_kg": 1892.989605,
+  "final_altitude_m": 106565.99839267414,
+  "final_speed_m_s": 7486.198136449601,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "42488c2d027b03a9371cc31e8930939f7c80a36b1da59bc24fca153264a548a9",
+  "pilot_sha256": "6aa709dc727333ac7d2c03e31c912c9c2761f551254d0bfe22c7573b5be37d09",
+  "parent_output_sha256": "5ea6c2c8180e26258d6b3922f9d0f5db90bb63312f13a09956a3c41c3214bedd",
+  "peak_drag_g": 0.00012733730240743833
+}

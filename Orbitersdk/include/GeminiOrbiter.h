@@ -30,6 +30,12 @@ inline void oapiSetAttitudeMode(OBJHANDLE h,int mode) {oapiGetVesselInterface(h)
 inline int oapiGetFocusAirspeed(double* value) {return oapiGetAirspeed(oapiGetFocusObject(),value);}
 inline int oapiGetFocusPitch(double* value) {return oapiGetPitch(oapiGetFocusObject(),value);}
 void oapiCameraSetAperture(double);
+// Legacy Gemini requests a fresh anonymous group with THGROUP_USER each time.
+// Current Orbiter requires a distinct explicit index for each custom group.
+inline THGROUP_HANDLE GeminiUserThrusterGroup(VESSEL* vessel,THRUSTER_HANDLE* thrusters,int count)
+{
+ return vessel->CreateThrusterGroup(thrusters,count,static_cast<THGROUP_TYPE>(THGROUP_USER+vessel->GetUserThrusterGroupCount()));
+}
 SURFHANDLE GeminiBitmap(int id);
 // Gemini predates the modern surface colour-key API.
 inline void GeminiBlt(SURFHANDLE target,SURFHANDLE source,int x,int y,int sx,int sy,int width,int height,DWORD key=SURF_NO_CK)
@@ -44,4 +50,6 @@ inline void GeminiBlt(SURFHANDLE target,SURFHANDLE source,int x,int y,int sx,int
 inline SURFHANDLE oapiCreateSurface(SURFHANDLE bitmap) { return bitmap; }
 #else
 #include <Orbitersdk.h>
+inline THGROUP_HANDLE GeminiUserThrusterGroup(VESSEL* vessel,THRUSTER_HANDLE* thrusters,int count)
+{ return vessel->CreateThrusterGroup(thrusters,count,THGROUP_USER); }
 #endif

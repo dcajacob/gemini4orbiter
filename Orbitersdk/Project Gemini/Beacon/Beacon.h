@@ -130,7 +130,7 @@ void Beacon::SetStage(VESSEL *vessel)
 	th_light[1] = vessel->CreateThruster(_V(0,0,-.1), _V(0,0,1), .01, main_tank, 200*SEC);
 	vessel->AddExhaust(th_light[1],.3,.1);
 
-	light_group = vessel->CreateThrusterGroup(th_light,2,THGROUP_USER);
+	light_group = GeminiUserThrusterGroup(vessel,th_light,2);
 	vessel->SetThrusterGroupLevel(light_group,1.0);
 };
 

@@ -1,0 +1,1 @@
+{"mode":"terminal","standoff":50,"maxspeed":2,"position_gain":0.01,"velocity_gain":0.15,"acceleration_deadband":0.001,"stabilize_target":true}

@@ -1,0 +1,19 @@
+{
+  "phase": "02-orient",
+  "input_sha256": "6e64bb132d7ca967a56f66692bb382e2e3597ddf8b5e17bd5ca38b4077db7753",
+  "output_sha256": "4633d08c5b5cb4a0b44095a1b1d7a5236440883318e7e79b47a7ba5510281b39",
+  "parent": "01-ascent",
+  "seconds": 120.0,
+  "step": 0.125,
+  "actual_saved_mjd": 39199.4523311632,
+  "fuel_index0_kg": 394.1891492307493,
+  "mass_kg": 3825.1891492307495,
+  "final_altitude_m": 249218.52164964378,
+  "final_speed_m_s": 7343.170514013309,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "4604ba2a58d0baaf5f11fa499369ba0d7fd4c3c1afa7dc0f76fd83b3bc8d5fec",
+  "pilot_sha256": "df3d9464bb563c259fcae2db1966bff9dfc9872afc6adfa73e6e7ec9a1edbefd",
+  "parent_output_sha256": "e3ae96cdfa760260b75a3dae21c49ca4c42490a82d263d04558420abef45a7bf",
+  "peak_drag_g": 1.7031619260694989e-07
+}

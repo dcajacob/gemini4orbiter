@@ -1,0 +1,19 @@
+{
+  "phase": "16-retro-attitude",
+  "input_sha256": "29d19959e50c56d0186ab8df950a337b5632200c328495af3c16708d98496d4c",
+  "output_sha256": "3de257e243e8a1009551b64529dbfe6d1d27421033896796b4605644c8d99345",
+  "parent": "15-deorbit-coast",
+  "seconds": 120.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.661772714,
+  "fuel_index0_kg": 45.94800230769118,
+  "mass_kg": 3476.9480023076912,
+  "final_altitude_m": 350807.6257001022,
+  "final_speed_m_s": 7266.720102393783,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "4bcaed64377710857a03406c04efe81fa9ee434e3cad5f3d8a07073f152545c5",
+  "pilot_sha256": "a2b2d50db60b7d95fa30a916a1811a0a0e6cf69bb08e053eb6cb7df444f1198b",
+  "parent_output_sha256": "5e92a6663bc2c2363953357eb01fcca6233ec2663e7522aba53ff19a69faa40f",
+  "peak_drag_g": 2.182629489457355e-08
+}

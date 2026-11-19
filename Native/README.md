@@ -40,7 +40,7 @@ panels, manual and scenarios. It adds historical scenery through the original
 standard Orbiter keymap to avoid laptop letter bindings conflicting with Gemini.
 
 Launch the packaged build with `./launch-orbiter`, then choose **Project Gemini**,
-**Earth 1962**, or **Gemini - Native Linux Saves**. Start paused, then Space resumes;
+**Earth 1962**, **Gemini - Native Linux Saves**, or **Gemini VIII - Native Flight**. Start paused, then Space resumes;
 Ctrl-P pauses. Numpad +/- controls Titan thrust. The original launch autopilot is
 on by default. F1 switches cockpit/exterior; F8 cycles cockpit modes. In the 2D
 cockpit, Ctrl-arrows select neighbouring panels. Read `Gemini_Titan2_45.pdf` for the
@@ -69,9 +69,9 @@ Native/verification/quiet.sh /tmp/gemini-audio \
   python3 Native/verification/replays.py /path/to/runtime /tmp/gemini-checks
 ```
 
-See `qualification.json` for measured results and binary identities. Qualification
-covers original-scenario loading and representative flights; it is not a claim
-that every Gemini mission or maneuver has been flown. Windows/macOS native ports,
-Windows parity and a continuous launch-to-rendezvous-to-return mission are not
-qualified here. This remains the original relatively simple Gemini 4.5 simulation,
+See `qualification.json` for measured results and binary identities. Qualification covers original-scenario loading, seven flight regressions and a
+continuous Gemini VIII launch/rendezvous/docking/return save chain. See
+[the flight report](verification/gemini8/README.md) for measured milestones, fixes,
+checkpoint replay instructions and limits. Windows/macOS native ports and Windows
+parity remain unverified. This remains the original relatively simple Gemini 4.5 simulation,
 not a NASSP-level subsystem model.

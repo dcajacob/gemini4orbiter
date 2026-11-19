@@ -1,0 +1,19 @@
+{
+  "phase": "11-terminal-approach",
+  "input_sha256": "f9e75065a87e5afebb22603699e3ac48284473281243edf469b8d4cc218485c2",
+  "output_sha256": "78baa13021e24461c91d5a3a13df56970c69f03bad4f0cb76d9048e3cf73bff7",
+  "parent": "10-rendezvous-braking",
+  "seconds": 1100.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.6120041956,
+  "fuel_index0_kg": 69.45079498169981,
+  "mass_kg": 3500.4507949817,
+  "final_altitude_m": 343163.39797159284,
+  "final_speed_m_s": 7276.223307609265,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "6a718be3186488e2b55efcf7832644c9c72d881a8b26a1eab8718d5f315465aa",
+  "pilot_sha256": "0423398fb0282251c0b694e89d5a55367c4e4928c3531d889982086ff4000971",
+  "parent_output_sha256": "c6a41415f129e4b253cfe57d5136d1edbda22bbcc793dc2add7dcd7d250c276a",
+  "peak_drag_g": 2.378140873670482e-08
+}

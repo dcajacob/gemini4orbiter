@@ -1,0 +1,19 @@
+{
+  "phase": "19-entry-attitude",
+  "input_sha256": "19a7b40850877836cba8a46369c19c7075450c86bf09ca6fc7dd8b2761f13111",
+  "output_sha256": "1ff538387deeb5808040785676d9998ba6b09c5b6205fa23eb0e68074448bd14",
+  "parent": "18-adapter-separation",
+  "seconds": 300.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.6867727139,
+  "fuel_index0_kg": 33.93556653846072,
+  "mass_kg": 1891.9355665384608,
+  "final_altitude_m": 68411.02257885132,
+  "final_speed_m_s": 7248.3799297019,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "73006dc86f8a0ff7415fcf8ff6f820d3c593b79a006037c2407c2c89e04ee237",
+  "pilot_sha256": "b669e2330cdcc586033f01504239d98b904bf492fc12c61e4a2449a6834a63a4",
+  "parent_output_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+  "peak_drag_g": 0.4692779248602777
+}

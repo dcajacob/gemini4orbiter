@@ -1,0 +1,19 @@
+{
+  "phase": "05-transfer-coast",
+  "input_sha256": "20c90baa8c7332a5f1041f12ce2e534e18010e892953f77feea71bebe0a8a182",
+  "output_sha256": "f3f51b908aaa856f3a6a0ce8126d86bff077cff0c7c26d23bea610a986d7a809",
+  "parent": "04-transfer-completion",
+  "seconds": 9200.0,
+  "step": 4.0,
+  "actual_saved_mjd": 39199.5691801216,
+  "fuel_index0_kg": 242.64408,
+  "mass_kg": 3673.64408,
+  "final_altitude_m": 175385.7879773192,
+  "final_speed_m_s": 7426.939052987601,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "f884c80935599c071b1658311903b64b52280a4a01c29c6e8b65ec923fed2c46",
+  "pilot_sha256": "0d249d5c029021bd9b83f2bcb4515ac3c3369679f95a37ee427c3750d8cd49b3",
+  "parent_output_sha256": "3b35479a392dadb52bf14dc17dc65e0eb25da99a7004bdeba9a0c5e5ff9d8799",
+  "peak_drag_g": 3.3501206929671647e-06
+}

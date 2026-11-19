@@ -1,0 +1,19 @@
+{
+  "phase": "08-intercept-correction",
+  "input_sha256": "29ad6abbe581c08bf4774057422138bc296f17052d8d1e6425bbb38550c7494c",
+  "output_sha256": "b98622e31610f64802e0e8d9610d646fff078c04ccfec9408127136e293d5a79",
+  "parent": "07-prebraking-coast",
+  "seconds": 200.0,
+  "step": 0.125,
+  "actual_saved_mjd": 39199.5853838253,
+  "fuel_index0_kg": 202.6579205128142,
+  "mass_kg": 3633.657920512814,
+  "final_altitude_m": 316153.42373482604,
+  "final_speed_m_s": 7254.693415809948,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "1965e0928f764b3dc7352eb5fda63d40a30ef7d4df6ceb08f7b324ecf8e626ad",
+  "pilot_sha256": "ec3377e8486117363c7e8df73313c9fc58850a940e65c748c7e68d6dae421306",
+  "parent_output_sha256": "719bdb070f26a55ef933ab57dcfd803fbb6aa6ada50ddfd9f0def021f154bedf",
+  "peak_drag_g": 5.3328344366546053e-08
+}

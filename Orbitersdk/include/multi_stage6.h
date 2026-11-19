@@ -725,6 +725,7 @@ void Multi_Stage::SetStage (IStage *Stage, double simt)
 	if (cStage)
 	{
 		cStage->Setup(this,simt);
+		cStage->FocusChanged(this, oapiGetFocusObject() == GetHandle());
 	};
 };
 

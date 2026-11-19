@@ -1,0 +1,19 @@
+{
+  "phase": "20-reentry",
+  "input_sha256": "ec86155907d33cc4ca5233de0760677ea29b13b6299c579e2196e9d535fd0dd4",
+  "output_sha256": "503e9b8f2d3e8b00e3ba151dcb0b73aea3502995e4d49312d63de1952d951e49",
+  "parent": "19-entry-attitude",
+  "seconds": 600.0,
+  "step": 0.03125,
+  "actual_saved_mjd": 39199.6937171583,
+  "fuel_index0_kg": 32.30519538461412,
+  "mass_kg": 1890.305195384614,
+  "final_altitude_m": 7357.804464849643,
+  "final_speed_m_s": 14.941220366618985,
+  "ground_contact": false,
+  "docked_to": "",
+  "evidence_state_sha256": "7069c3dfe507df63449cef5c88f793ba1d34c44b7ab249e0cc3d1f513ec3d693",
+  "pilot_sha256": "aaeff25a0edee6e9d5e2a32b093f6a162e9119bea7db51f92e6bf48002c2a301",
+  "parent_output_sha256": "1ff538387deeb5808040785676d9998ba6b09c5b6205fa23eb0e68074448bd14",
+  "peak_drag_g": 6.175141043815449
+}
