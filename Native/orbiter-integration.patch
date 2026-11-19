@@ -1,0 +1,352 @@
+diff --git a/OVP/OGLClient/Scene.cpp b/OVP/OGLClient/Scene.cpp
+index ac49063d..b0f4f8d6 100644
+--- a/OVP/OGLClient/Scene.cpp
++++ b/OVP/OGLClient/Scene.cpp
+@@ -110,6 +110,10 @@ Scene::~Scene ()
+ 
+ void Scene::Initialise ()
+ {
++    // Initial vessels predate creation notifications. Render their finalized
++    // meshes on the first frame, including launch pads in an external view.
++    for (oapi::UInt32 i=0;i<oapiGetVesselCount();++i)
++        pendingVessels.push_back(oapiGetVesselByIndex(i));
+ 	OBJHANDLE hSun = oapiGetGbodyByIndex(0); // generalise later
+ 	light = new OGLLight (hSun, OGLLight::Directional, this, 0);
+ 	light->light.enabled = 1;
+@@ -297,10 +301,10 @@ void Scene::AddLocalLight (const LightEmitter *le, const vObject *vo, int idx)
+ void Scene::Update ()
+ {
+ 	cam->Update (); // update camera parameters
+-	// An internal view needs its focus visual on the first frame. The round-
+-	// robin check below can otherwise leave the stock cockpit absent until
++	// Every view needs its focus visual on the first frame. The round-
++	// robin check below can otherwise leave the focused vessel absent until
+ 	// every Solar System body has been visited (over forty frames in Sol).
+-	if(oapiCameraInternal())CheckVisual(oapiGetFocusObject());
++	CheckVisual(oapiGetFocusObject());
+ 	// Creation notifications precede engine PostCreation/finalization. Register
+ 	// immediately, then refresh visibility with the finalized body/current camera.
+ 	for (auto body:pendingVessels) CheckVisual(body);
+diff --git a/OVP/OGLClient/cloudmgr2.cpp b/OVP/OGLClient/cloudmgr2.cpp
+index f963cc2e..649824cf 100644
+--- a/OVP/OGLClient/cloudmgr2.cpp
++++ b/OVP/OGLClient/cloudmgr2.cpp
+@@ -93,7 +93,8 @@ void CloudTile::Load ()
+ void CloudTile::Render ()
+ {
+ //	TileManager2<CloudTile>::Dev()->SetTexture (0, tex);
+-	if (!mesh) return; // DEBUG : TEMPORARY
++	// Cloud tile textures can still be unavailable after mesh creation.
++	if (!mesh || !tex) return;
+ 	if(!mesh->VAO) {
+ 		if (state & TILE_VALID) {
+ 			mesh->Upload();
+diff --git a/OVP/OGLClient/surfmgr2.cpp b/OVP/OGLClient/surfmgr2.cpp
+index 1a155d9b..912ac066 100644
+--- a/OVP/OGLClient/surfmgr2.cpp
++++ b/OVP/OGLClient/surfmgr2.cpp
+@@ -500,7 +500,8 @@ void SurfTile::Render ()
+ 	//static float spec_base = 0.4f; // 0.95f;
+ 	//static D3DMATERIAL7 pmat, watermat = {{1,1,1,1},{1,1,1,1},{spec_base*1.2f,spec_base*1.0f,spec_base*0.8f,1},{0,0,0,0},50.0f};
+ 
+-	if (!mesh) return; // DEBUG : TEMPORARY
++	// A tile can have elevation data before a surface texture is available.
++	if (!mesh || !tex) return;
+ 	if(!mesh->VAO) {
+ 		if (state & TILE_VALID) {
+ 			mesh->Upload();
+diff --git a/Src/Orbiter/Production/NativeApplication.cpp b/Src/Orbiter/Production/NativeApplication.cpp
+index 2549313f..15d19dc9 100644
+--- a/Src/Orbiter/Production/NativeApplication.cpp
++++ b/Src/Orbiter/Production/NativeApplication.cpp
+@@ -61,6 +61,7 @@
+ #include <limits>
+ #include <map>
+ #include <memory>
++#include <mutex>
+ #include <optional>
+ #include <stdexcept>
+ #include <string>
+@@ -195,6 +196,8 @@ bool SupportedApolloVessel(Vessel& body,const char* type) {
+             "projectapollo/sm-panel1", "projectapollo/sm-panel2", "projectapollo/sm-panel3",
+             "projectapollo/sm-panel4", "projectapollo/sm-panel5", "projectapollo/sm-panel6",
+             "projectapollo/sat1aerocap",
++            "projectapollo/nsat1stg21", "projectapollo/nsat1stg22",
++            "projectapollo/nsat1stg23", "projectapollo/nsat1stg24",
+             "projectapollo/easeptv", "projectapollo/alseptv",
+             "projectapollo/sat5intstg", "projectapollo/sat5intstg4", "projectapollo/sat5intstg8",
+             "projectapollo/sat5intstglowres", "projectapollo/sat5stg31", "projectapollo/sat5stg31wide",
+@@ -202,12 +205,23 @@ bool SupportedApolloVessel(Vessel& body,const char* type) {
+             "projectapollo/sat5stg33wide", "projectapollo/sat5stg34", "projectapollo/sat5stg34wide"
+         };
+         const auto& vessel=*body.GetModuleInterface();
++        if (classname=="carina")
++            return vessel.Version()==0 && vessel.GetMeshCount()==1 &&
++                   vessel.GetSize()==5 && vessel.GetEmptyMass()==5000 &&
++                   vessel.GetPropellantCount()==0 && vessel.DockCount()==0 &&
++                   vessel.AttachmentCount(true)==2 && vessel.AttachmentCount(false)==0;
+         return vessel.GetMeshCount()==1 && vessel.GetThrusterCount()==0 &&
+                std::any_of(std::begin(debrisClasses),std::end(debrisClasses),
+                    [&](const char* type){return classname==type;});
+     }
+     const auto moduleName=ResourceResolver::Normalize(module);
+-    return (classname=="projectapollo/saturn1b" && moduleName=="projectapollo/saturn1b") ||
++    if (classname=="stage" && moduleName=="stage") {
++        const auto& vessel=*body.GetModuleInterface();
++        return vessel.Version()==1 && vessel.GetSize()==20 && vessel.GetEmptyMass()==1000 &&
++               vessel.GetMeshCount()==1 && vessel.GetThrusterCount()==0 && vessel.DockCount()==0;
++    }
++    return (classname=="vesselbuilder1/soyuz7k-tm" && moduleName=="vesselbuilder1") ||
++           (classname=="projectapollo/saturn1b" && moduleName=="projectapollo/saturn1b") ||
+            (classname=="projectapollo/saturn5" && moduleName=="projectapollo/saturn5") ||
+            (classname=="projectapollo/saturn1babort1" && moduleName=="projectapollo/sat1babort1") ||
+            (classname=="projectapollo/saturn1babort2" && moduleName=="projectapollo/sat1babort2") ||
+@@ -332,6 +346,8 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+     double nextPlaybackEvent=0;
+     NativeScriptHost scripts{resources.modules};
+     std::array<char,256> simulatedKeys{};
++    std::mutex simulatedKeyMutex;
++    std::vector<FlightInput> pendingBufferedKeys;
+     TimeJumpData scriptJump{};
+     INTERPRETERHANDLE scenarioInterpreter=nullptr;
+     std::unique_ptr<Pane> cockpit;
+@@ -696,11 +712,19 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+             event.keys[modifiers[i]]=char(0x80);
+         }
+         event.events.push_back({key,true});
+-        Buffered(event);
++        if (std::this_thread::get_id()==cockpitThread) {
++            Buffered(event);
++        } else {
++            // A vessel key handler can create or replace meshes. Run it on the
++            // simulation thread, which owns the graphics context.
++            std::lock_guard<std::mutex> lock(simulatedKeyMutex);
++            pendingBufferedKeys.push_back(std::move(event));
++        }
+         return true;
+     }
+     bool ImmediateKeys(const char *keys,bool runningOnly) override {
+         if ((runningOnly && !running) || !keys) return false;
++        std::lock_guard<std::mutex> lock(simulatedKeyMutex);
+         for (std::size_t i=0;i<simulatedKeys.size();++i) simulatedKeys[i]|=keys[i];
+         return true;
+     }
+@@ -720,6 +744,9 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+             if(event.down) {
+                 const bool spacePause=code==OAPI_KEY_SPACE && !KEYMOD_SHIFT(eventKeys.data()) &&
+                     !KEYMOD_CONTROL(eventKeys.data()) && !KEYMOD_ALT(eventKeys.data());
++                // Running vessels get their normal Space command (Mercury retrosequence).
++                // Space still resumes a paused session; Ctrl-P always pauses.
++                if(spacePause && running && render.focus->ConsumeBufferedKey(code,true,eventKeys.data()))continue;
+                 if(spacePause || keymap.IsLogicalKey(code,eventKeys.data(),OAPI_LKEY_Pause)) {running=!running;render.paused=!running;continue;}
+                 if(keymap.IsLogicalKey(code,eventKeys.data(),OAPI_LKEY_Quicksave)) {savePending=true;continue;}
+ #ifdef ORBITER_NATIVE_COCKPIT
+@@ -1038,6 +1065,44 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+         for(auto* body:system->GetVessels()) {
+             auto* vessel=body->GetModuleInterface();const char* type=vessel->GetClassName();
+             if(apolloWorld && SupportedApolloVessel(*body,type))continue;
++            // Gemini4Orbiter native admission. NativeModule retains all SDK/ABI guards.
++            auto geminiType=ResourceResolver::Normalize(type);
++            if(geminiType.rfind("vessels/",0)==0)geminiType.erase(0,8);
++            const std::pair<const char*,const char*> geminiModules[]={
++                {"gemini_titan","gemini_titan"},{"gemini_titan7","gemini_titan"},
++                {"cv_gatv","gatv"},{"cv_gatv-5003","gatv"},
++                {"gemini_cdr","gemini_astro"},{"gemini_plt","gemini_astro"},
++                {"gemini_eva","gemini_eva"},{"beacon","beacon"}
++            };
++            if(body->NativeModuleName() && std::any_of(std::begin(geminiModules),std::end(geminiModules),
++                [&](const auto& entry){return geminiType==entry.first && ResourceResolver::Normalize(body->NativeModuleName())==entry.second;}))continue;
++            // These original classes are defined entirely by Orbiter configuration.
++            static const char* geminiConfigured[]={"titan_stage_first","titan_stage_second","titan_mid_section",
++                "microm","gemini_nose","gemini_chute","gemini_drogue","gemini_equip","gemini_adapt",
++                "gemini_door_left","gemini_door_right","ejectseat","agena","agena_dock"};
++            if(!body->NativeModuleName() && vessel->Version()==0 && std::any_of(std::begin(geminiConfigured),std::end(geminiConfigured),
++                [&](const char* name){return geminiType==name;}))continue;
++
++            // Only original Mercury classes backed by their real native module.
++            // NativeModule has already checked the descriptor, SDK build and C++ ABI.
++            auto mercuryClass=ResourceResolver::Normalize(type);
++            if (mercuryClass.rfind("vessels/",0)==0) mercuryClass.erase(0,8);
++            if (mercuryClass.rfind("projectmercury/",0)==0 && body->NativeModuleName()) {
++                const auto mercuryModule=ResourceResolver::Normalize(body->NativeModuleName());
++                static constexpr const char* mercuryModules[]={
++                    "projectmercury/projectmercuryredstone", "projectmercury/projectmercuryatlas",
++                    "projectmercury/mercury_atlascore", "projectmercury/mercury_redstonebooster",
++                    "projectmercury/mercury_abort", "projectmercury/mercury_antennadrogue",
++                    "projectmercury/mercury_mainchute", "projectmercury/mercury_genericinert",
++                    "projectmercury/mercury_lc5", "projectmercury/mercury_lc14",
++                    "projectmercury/projectmercurylittlejoe", "projectmercury/littlejoebooster",
++                    "projectmercury/littlejoeramp", "projectmercury/projectmercuryscout",
++                    "projectmercury/scoutstagegeneric"
++                };
++                if (std::any_of(std::begin(mercuryModules),std::end(mercuryModules),
++                    [&](const char* name){ return mercuryModule==name; })) continue;
++            }
++
+             const bool pb=CompareText(type,"ShuttlePB")==0 && vessel->Version()==2 && vessel->GetMeshCount()==1 && vessel->GetThrusterCount()==16 && vessel->GetPropellantCount()==1;
+             const bool iss=CompareText(type,"ProjectAlpha_ISS")==0 && vessel->Version()==0 && vessel->GetMeshCount()==1;
+ #ifdef ORBITER_NATIVE_COCKPIT
+@@ -1451,7 +1516,16 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+         return text.str();
+     }
+     void Step(double dt) {
+-        observationTick=completedTicks;Commands("before");Buffered(input);InputRecord();
++        observationTick=completedTicks;
++#ifdef ORBITER_NATIVE_COCKPIT
++        std::vector<FlightInput> bufferedKeys;
++        {
++            std::lock_guard<std::mutex> lock(simulatedKeyMutex);
++            bufferedKeys.swap(pendingBufferedKeys);
++        }
++        for (auto& event:bufferedKeys) Buffered(event);
++#endif
++        Commands("before");Buffered(input);InputRecord();
+         const bool wasRunning=running;if(stepOnce){running=true;stepOnce=false;}
+         render.paused=!running;
+ #ifdef ORBITER_NATIVE_COCKPIT
+@@ -1461,10 +1535,13 @@ struct Runtime final:BodyServices,RigidBodyServices,SurfaceServices,NavigationSe
+ #endif
+ #ifdef ORBITER_NATIVE_COCKPIT
+         FlightInput snapshot=input;
+-        for (std::size_t i=0;i<simulatedKeys.size();++i) snapshot.keys[i]|=simulatedKeys[i];
++        {
++            std::lock_guard<std::mutex> lock(simulatedKeyMutex);
++            for (std::size_t i=0;i<simulatedKeys.size();++i) snapshot.keys[i]|=simulatedKeys[i];
++            if(running) simulatedKeys.fill(0);
++        }
+         HandleCockpitSystemKeys(controls.keymap,snapshot.keys.data(),force);
+         if(running) {
+-            simulatedKeys.fill(0);
+             controls.Immediate(*render.focus,time,snapshot);
+         }
+ #else
+diff --git a/Src/Orbiter/Production/NativeRenderApi.cpp b/Src/Orbiter/Production/NativeRenderApi.cpp
+index bc5c580c..4d6b371c 100644
+--- a/Src/Orbiter/Production/NativeRenderApi.cpp
++++ b/Src/Orbiter/Production/NativeRenderApi.cpp
+@@ -129,8 +129,14 @@ VesselLifetimeServices& lifetime() {
+ void validateCreation(const char* name,const char* classname) {
+     // Vessel headers preserve interior spaces, as used by NASSP crew and ALSEP.
+     if(!name || !*name || std::strlen(name)>=64 || name[0]==' ' || name[std::strlen(name)-1]==' ' ||
+-       !classname || !*classname || std::strpbrk(name,"\r\n\t:;,/\\") ||
++       !classname || !*classname || std::strpbrk(name,"\r\n\t:;,") ||
+        GetNativeRenderContext().world->GetVessel(name,true))throw std::runtime_error("Invalid or duplicate native vessel name/class");
++    // The legacy Stage module uses its vessel name as a relative mesh path.
++    if (std::strpbrk(name,"/\\")) {
++        if (ResourceResolver::Normalize(classname)!="stage")
++            throw std::runtime_error("Path separators are only allowed in legacy Stage vessel names");
++        ResourceResolver::Normalize(name);
++    }
+ }
+ }
+ OBJHANDLE oapiSetFocusObject(OBJHANDLE handle) {
+diff --git a/Src/Orbiter/Vessel.cpp b/Src/Orbiter/Vessel.cpp
+index 4fb96698..d8a57e12 100644
+--- a/Src/Orbiter/Vessel.cpp
++++ b/Src/Orbiter/Vessel.cpp
+@@ -955,6 +955,38 @@ void Vessel::SetRotationMatrix (const Matrix &R)
+ 
+ // ==============================================================
+ 
++void Vessel::SetPropagator (int &plevel, int &nstep) const
++{
++	VesselBase::SetPropagator(plevel, nstep);
++	if (!bSurfaceContact || !bDynamicGroundContact)
++		return;
++
++	const double minPMI = std::min({pmi.x, pmi.y, pmi.z});
++	if (mass <= 0.0 || minPMI <= 0.0)
++		return;
++
++	// A contact force also rotates the vessel about its centre of mass.
++	// Bound the spring and damping rates using that point's maximum
++	// effective inverse mass, summed over the possible contacts.
++	double stiffnessRateSquared = 0.0;
++	double dampingRate = 0.0;
++	for (oapi::UInt32 i = 0; i < ntouchdown_vtx; ++i) {
++		const auto &point = touchdown_vtx[i];
++		const double inverseMass = (1.0 + point.pos.length2()/minPMI)/mass;
++		stiffnessRateSquared += std::max(0.0, point.stiffness)*inverseMass;
++		dampingRate += std::max(0.0, point.damping)*inverseMass;
++	}
++
++	// Use at least one sample per spring radian and per two damping time
++	// constants, with a bounded extra cost during time acceleration.
++	constexpr double maxAdaptiveSubsteps = 128.0;
++	const double rate = std::max(std::sqrt(stiffnessRateSquared), dampingRate/2.0);
++	const double required = GetRigidBodyServices().Time().SimDT * rate;
++	nstep = std::max(nstep, static_cast<int>(std::ceil(std::min(required, maxAdaptiveSubsteps))));
++}
++
++// ==============================================================
++
+ void Vessel::GetIntermediateMoments (Vector &acc, Vector &tau, const StateVectors &state, double tfrac, double dt)
+ {
+ 	// TODO: Move this up to VesselBase
+@@ -1408,18 +1440,12 @@ bool Vessel::DelThruster (ThrustSpec *ts)
+ 	// remove from default thruster group lists
+ 	for (auto it = m_thrusterGroupDef.begin(); it != m_thrusterGroupDef.end(); it++) {
+ 		ThrustGroupSpec* tgs = &(*it);
+-		for (auto its = tgs->ts.begin(); its != tgs->ts.end(); its++) {
+-			if (*its == ts)
+-				tgs->ts.erase(its);
+-		}
++		tgs->ts.erase(std::remove(tgs->ts.begin(), tgs->ts.end(), ts), tgs->ts.end());
+ 	}
+ 	// remove from user thruster group lists
+ 	for (auto it = m_thrusterGroupUsr.begin(); it != m_thrusterGroupUsr.end(); it++) {
+ 		ThrustGroupSpec* tgs = *it;
+-		for (auto its = tgs->ts.begin(); its != tgs->ts.end(); its++) {
+-			if (*its == ts)
+-				tgs->ts.erase(its);
+-		}
++		tgs->ts.erase(std::remove(tgs->ts.begin(), tgs->ts.end(), ts), tgs->ts.end());
+ 	}
+ 	// remove from full thruster list
+ 	auto it = std::find(m_thruster.begin(), m_thruster.end(), ts);
+@@ -7708,18 +7734,29 @@ void Vessel::WriteDefault (ostream &ofs) const
+ 	bool needlabel;
+ 
+ 	switch (fstatus) {
+-	case FLIGHTSTATUS_LANDED:
++	case FLIGHTSTATUS_LANDED: {
+ 		ofs << "  STATUS Landed " << proxyplanet->Name() << endl;
+ 		if (proxybase && (pad = proxybase->LandedAtPad (this)) >= 0)
+ 			ofs << "  BASE " << proxybase->Name() << ':' << pad+1 << endl;
+-		ofs << "  POS " << setprecision(7) << sp.lng*DEG << ' ' << sp.lat*DEG << endl;
++		double lng = sp.lng, lat = sp.lat, alt = sp.alt;
++		// Modules may temporarily shift the origin while writing their state.
++		// Use the shifted position when it differs from the cached surface anchor.
++		const Vector pos = proxyplanet->GlobalToLocal (GPos());
++		constexpr double positionToleranceSquared = 1e-8; // (0.1 mm)^2
++		if ((pos - sp.ploc).length2() > positionToleranceSquared) {
++			double rad;
++			proxyplanet->LocalToEquatorial (pos, lng, lat, rad);
++			alt = rad - proxyplanet->Size() - proxyplanet->Elevation (lng, lat);
++		}
++		ofs << "  POS " << setprecision(7) << lng*DEG << ' ' << lat*DEG << endl;
+ 		ofs << "  HEADING " << setprecision(2) << sp.dir*DEG << endl;
+-		ofs << "  ALT " << setprecision(3) << sp.alt << endl;
++		ofs << "  ALT " << setprecision(3) << alt << endl;
+ 		// new: save Euler angles of horizon-local rotation matrix
+ 		ofs << "  AROT " << setprecision(3) <<  DEG*atan2 (land_rot.m23, land_rot.m33) << ' '
+ 											<< -DEG*asin  (land_rot.m13) << ' '
+ 							                <<  DEG*atan2 (land_rot.m12, land_rot.m11) << endl;
+ 		break;
++	}
+ 	case FLIGHTSTATUS_FREEFLIGHT:
+ 		if (cbody) {
+ 			ofs << "  STATUS Orbiting " << cbody->Name() << endl;
+diff --git a/Src/Orbiter/Vessel.h b/Src/Orbiter/Vessel.h
+index 007aebea..2bbd374a 100644
+--- a/Src/Orbiter/Vessel.h
++++ b/Src/Orbiter/Vessel.h
+@@ -1314,6 +1314,8 @@ protected:
+ 
+ 	void HoverHoldAltitude ();
+ 
++	void SetPropagator (int &plevel, int &nstep) const override;
++
+ 	bool CheckSurfaceContact () const;
+ 	// Returns true if any part of the vessel is in contact with a planet surface
+ 	// Should be called only after update phase, and assumes that sp is up to date.

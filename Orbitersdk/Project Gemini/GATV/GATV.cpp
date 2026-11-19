@@ -2,9 +2,9 @@
 // ORBITER vessel module: Mercury Redstone
 // ==============================================================
 
-#include "..\..\include\orbitersdk.h"
-#include "..\..\include\multi_stage6.h"
-#include "gatv.h"
+#include "GeminiOrbiter.h"
+#include "../../include/multi_stage6.h"
+#include "GATV.h"
 
 
 void InitialCaps(VESSEL2 *vessel) {

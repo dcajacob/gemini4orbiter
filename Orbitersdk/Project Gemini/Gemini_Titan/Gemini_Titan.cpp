@@ -2,14 +2,15 @@
 // ORBITER vessel module: Mercury Redstone
 // ==============================================================
 
-#include "..\..\include\orbitersdk.h"
-#include "..\..\include\multi_stage6.h"
-#include "gemini.h"
-#include "titan2.h"
+#include "GeminiOrbiter.h"
+#include "../../include/multi_stage6.h"
+#include "Gemini.h"
+#include "Titan2.h"
 #include "gemini_panel.h"
 #include "panel_graphics.h"
 
 
+#ifndef GEMINI_NATIVE_ORBITER
 BOOL WINAPI DllMain (HINSTANCE hModule,
 					 DWORD ul_reason_for_call,
 					 LPVOID lpReserved)
@@ -45,6 +46,7 @@ BOOL WINAPI DllMain (HINSTANCE hModule,
 	return TRUE;
 }
 
+#endif
 void InitialCaps(VESSEL2 *vessel) {
 	IStage *newStage;
 	newStage = new Titan2FirstStage((Gemini_ControlPanel*)((Multi_Stage*)vessel)->GetPanel());

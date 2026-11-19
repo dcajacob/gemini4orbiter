@@ -2312,3 +2312,8 @@ Modules
 /Device.dat
 /Doc/BaseGrid_Tool.txt
 /Meshes/GridHelp.msh
+
+# Native CMake/Python output
+/build/
+__pycache__/
+*.pyc

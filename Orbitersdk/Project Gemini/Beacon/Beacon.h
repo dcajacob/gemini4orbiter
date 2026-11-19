@@ -1,7 +1,7 @@
 #ifndef __BEACON_H
 #define __BEACON_H
-#include "../../include/OrbiterAPI.h"
-#include "../../include/VesselAPI.h"
+#include "GeminiOrbiter.h"
+#include "GeminiOrbiter.h"
 #include "../../include/multi_stage3.h"
 
 const double MASS_Beacon  = 44*KG;

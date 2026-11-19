@@ -1,8 +1,8 @@
 #ifndef __GEMINI_H
 #define __GEMINI_H
 
-#include "..\..\include\orbitersdk.h"
-#include "..\..\include\multi_stage4.h"
+#include "GeminiOrbiter.h"
+#include "../../include/multi_stage4.h"
 #include "panel_graphics.h"
 #include "gemini_panel.h"
 #include <cstdio>
@@ -796,7 +796,7 @@ void Gemini::ParseLine (VESSEL2 *vessel, char *line, void *vs)
 		else
 			bRCSJets=false;
     } else if (!strnicmp (line, "DOOR_STATUS", 11)) 	{
-        sscanf (line+11, "%d", &door_status);
+        if (sscanf (line+11, "%d", &tempI) == 1) door_status = static_cast<DoorStatus>(tempI);
     } else if (!strnicmp (line, "DOOR_PROC", 9)) 	{
         sscanf (line+9, "%lf", &door_proc);
     } else if (!strnicmp (line, "BEACON_JETTISONED", 17)) 	{
@@ -853,7 +853,7 @@ void Gemini::ParseLine (VESSEL2 *vessel, char *line, void *vs)
 		else
 			bMainJettisoned=false;
     } else if (!strnicmp (line, "LINE1_STATUS", 12)) 	{
-        sscanf (line+12, "%d", &line1_status);
+        if (sscanf (line+12, "%d", &tempI) == 1) line1_status = static_cast<LineStatus>(tempI);
     } else if (!strnicmp (line, "LINE1_PROC", 10)) 	{
         sscanf (line+10, "%lf", &line1_proc);
     } else if (!strnicmp (line, "GEMINI_EVA", 10)) 	{
@@ -1603,7 +1603,7 @@ int Gemini::ConsumeBufferedKey (VESSEL2 *vessel, DWORD key, bool down, char *kst
 							sprintf(oapiDebugString(),"Agena Command %dXX", AgenaCommand[0]);
 						return 1;
 					} 
-					sprintf(oapiDebugString(),"Agena Command %d Ready To Transmit", AgenaCommand);
+					sprintf(oapiDebugString(),"Agena Command %d%d%d Ready To Transmit", AgenaCommand[0], AgenaCommand[1], AgenaCommand[2]);
 					
 					if (key == OAPI_KEY_T && nAgenaCommand == 3) // "Transmit Agena Command" 
 					{
@@ -1667,7 +1667,7 @@ int Gemini::ConsumeBufferedKey (VESSEL2 *vessel, DWORD key, bool down, char *kst
 						else
 							hAgena = 0;	
 					else {
-						sprintf(oapiDebugString(), hAgena->GetClassName());
+						sprintf(oapiDebugString(), "%s", hAgena->GetClassName());
 						hAgena = 0;	
 					}
 				}

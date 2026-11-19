@@ -1,11 +1,21 @@
+#ifdef GEMINI_NATIVE_ORBITER
+#include "GeminiOrbiter.h"
+#include "Beacon.h"
+DLLCLBK VESSEL* ovcInit(OBJHANDLE h,int) {return new Multi_Stage(h);}
+DLLCLBK void ovcExit(VESSEL* v) {delete static_cast<Multi_Stage*>(v);}
+DLLCLBK void ovcSetClassCaps(VESSEL* v,FILEHANDLE) {static_cast<Multi_Stage*>(v)->SetStage(new Beacon(),0);}
+DLLCLBK int ovcConsumeKey(VESSEL* v,const char* keys) {return static_cast<Multi_Stage*>(v)->ConsumeKey(keys);}
+DLLCLBK int ovcConsumeBufferedKey(VESSEL* v,DWORD key,bool down,char* keys) {return down?static_cast<Multi_Stage*>(v)->ConsumeBufferedKey(key,down,keys):0;}
+DLLCLBK void ovcTimestep(VESSEL* v,double time) {static_cast<Multi_Stage*>(v)->Timestep(time);}
+#else
 // ==============================================================
 // ORBITER vessel module: Mercury Redstone
 // ==============================================================
 
-#include "../../include/OrbiterAPI.h"
-#include "../../include/VesselAPI.h"
+#include "GeminiOrbiter.h"
+#include "GeminiOrbiter.h"
 #include "../../include/multi_stage4.h"
-#include "beacon.h"
+#include "Beacon.h"
 
 // Initialisation
 DLLCLBK VESSEL *ovcInit (OBJHANDLE hvessel, int flightmodel)
@@ -98,3 +108,5 @@ DLLCLBK void ovcSetState (VESSEL *vessel, const VESSELSTATUS *status)
 {
 	vessel->DefSetState (status);	        // default initialisation
 }
+
+#endif

@@ -2,9 +2,9 @@
 // ORBITER vessel module: NASA Manned Manuveuring Unit (MMU)
 // ==============================================================
 
-#include "../../include/orbitersdk.h"
+#include "GeminiOrbiter.h"
 #include "../../include/multi_stage3.h"
-#include "gemini_astro.h"
+#include "Gemini_Astro.h"
 
 // ==============================================================
 // API interface

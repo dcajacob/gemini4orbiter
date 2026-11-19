@@ -1,7 +1,7 @@
 #ifndef __COMMON_ADDON2_H
 #define __COMMON_ADDON2_H
 
-#include "orbitersdk.h"
+#include "GeminiOrbiter.h"
 
 class COMMON_VESSEL2: public VESSEL2 {
 public:

@@ -1,10 +1,10 @@
 #ifndef __MULTI_STAGE_H
 #define __MULTI_STAGE_H
 
-#include "orbitersdk.h"
+#include "GeminiOrbiter.h"
 #include "common_addon.h"
-#include "matrix.h"
-#include "vectors.h"
+#include "Matrix.h"
+#include "Vectors.h"
 #include <math.h>
 #include <stdio.h>
 #include <fstream.h>

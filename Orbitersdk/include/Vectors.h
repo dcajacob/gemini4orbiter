@@ -4,7 +4,7 @@
 #define _VECTORS_
 
 
-#include "matrix.h"
+#include "Matrix.h"
 #include <math.h>
 class matrix;
 class vector3
@@ -47,7 +47,7 @@ class vector3
   double length();
   double mod();
   double distance(vector3 &v);
-  double angle(vector3 &v); 
+  double angle(vector3 v);
   vector3 inplane(vector3 &v1,vector3 &v2); //return the projection of this onto plane v1,v2
 
 };
@@ -190,7 +190,7 @@ double vector3::distance(vector3 &v)
 {return (*this-v).length();
 }
 
-double vector3::angle(vector3 &v)
+double vector3::angle(vector3 v)
 { return (double) acos((*this % v)/((*this).mod()*v.mod())); //acos( (p1%p2) / ([p1]*[p2]) )
 }
 

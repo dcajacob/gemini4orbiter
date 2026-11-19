@@ -1,8 +1,8 @@
 #ifndef __GATV_H
 #define __GATV_H
 
-#include "..\..\include\orbitersdk.h"
-#include "..\..\include\multi_stage6.h"
+#include "GeminiOrbiter.h"
+#include "../../include/multi_stage6.h"
 
 const double  AGENA_LENGTH       = 8.09;
 const VECTOR3 AGENA_OFS_FLAME    = { 0.0, 0.0     , -AGENA_LENGTH/2};

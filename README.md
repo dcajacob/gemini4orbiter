@@ -53,3 +53,5 @@ The scope of this project shall be limited to the following work until Walpurgis
    * Loading/Saving of important subsystem parameters shall be automatic.
    * Test framework support, asserting subsystem states.
 
+
+Native Linux OpenGL support, build/launch instructions and qualification results: [Native/README.md](Native/README.md).

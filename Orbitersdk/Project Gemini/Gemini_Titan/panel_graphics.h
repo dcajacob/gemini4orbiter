@@ -1,6 +1,7 @@
 #ifndef __PANEL_GRAPHICS_H
 #define __PANEL_GRAPHICS_H
 
+#ifndef GEMINI_NATIVE_ORBITER
 typedef struct {
 	HINSTANCE hDLL;
 	HFONT font[2];
@@ -12,4 +13,5 @@ typedef struct {
 GDIParams g_Param;
 
 
+#endif
 #endif 

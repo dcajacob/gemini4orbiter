@@ -1,9 +1,9 @@
 #ifndef __TITAN2_H
 #define __TITAN2_H
-#include "..\..\include\orbitersdk.h"
-#include "..\..\include\multi_stage4.h"
+#include "GeminiOrbiter.h"
+#include "../../include/multi_stage4.h"
 #include "gemini_panel.h"
-#include "gemini.h"
+#include "Gemini.h"
 
 
 
@@ -841,7 +841,18 @@ void Titan2FirstStage::SetStage(VESSEL2 *vessel)
 	vessel->SetEmptyMass       (GEMINI_MASS + STAGE2_MASS + STAGE1_MASS_EMPTY);
 	vessel->SetPMI             (_V(40+6+3.5,40+6+3.5,1.25+1.25+.85));
 	vessel->SetCrossSections   (_V(70+25+12.5,70+25+12.5,8.5));
+#ifdef GEMINI_NATIVE_ORBITER
+	// The old three-point API derives suspension stiffness from dry mass.
+	// On this tall, fueled stack that tilts the rocket before liftoff.
+	const TOUCHDOWNVTX launchContacts[] = {
+		{_V(0,-1.0,STAGE1_OFS1_FLAME.z),1e8,1e6,0.5,0.5},
+		{_V(-.7,.7,STAGE1_OFS1_FLAME.z),1e8,1e6,0.5,0.5},
+		{_V(.7,.7,STAGE1_OFS1_FLAME.z),1e8,1e6,0.5,0.5}
+	};
+	vessel->SetTouchdownPoints(launchContacts,3);
+#else
 	vessel->SetTouchdownPoints (_V(0,-1.0,STAGE1_OFS1_FLAME.z), _V(-.7,.7,STAGE1_OFS1_FLAME.z), _V(.7,.7,STAGE1_OFS1_FLAME.z));
+#endif
 	//vessel->SetCW              (1.0, 0.1, 0.3, 0.3);
 	vessel->SetCW              (0.1,0.3, .8, .8);
 	vessel->SetRotDrag         (_V(0.7,0.7,0.7));

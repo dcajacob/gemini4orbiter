@@ -1,0 +1,288 @@
+{
+  "platform": "native Linux x86-64",
+  "renderer": "OpenGL 4.5; Mesa llvmpipe, Xvfb",
+  "wine_used": false,
+  "audio": "private PulseAudio null sink at 5%; desktop volume untouched",
+  "upstream": "Urwumpe/gemini4orbiter",
+  "upstream_revision": "b9477c3",
+  "fork": "https://github.com/dcajacob/gemini4orbiter/tree/codex/native-linux-opengl",
+  "orbiter_base": "0702cca393b81b2dcc4722b6de3e905eeae91256",
+  "orbiter_patch_sha256": "486ada482482613cb622797bc70dcca02d9debb1854276d31bc196ce67714f6b",
+  "sdk_sha256": "3c06714aba16a66a08210c27213cf315db361f7be8bb0e1593fe56853fbc11d9",
+  "binary_sha256": {
+    "engine/orbiter-production": "74f0bd94596c406ca20a8f2c2fd5e474feaac09f188117d83b0645b2484586a6",
+    "engine/liborbiter_production_boundary.so": "dd3458a340fb9f44ccbdba8935e00621bd07d6aa14e5ce61b6ca27c50052bb40",
+    "engine/liborbiter_production_vessels.so": "aeda38aae78f47a40b71ef31aff4e751535275776ce22198a0565c47f4038d5e",
+    "engine/NativeModules/Graphics/OGLClient.so": "d15871b36e669f2ffcbccd5284713aa430840a58dbb305e31b4c392c8bf8223d",
+    "engine/NativeModules/Plugin/XRSound.so": "b63216cdbfe3a0058cfdfa20a1f4ea5fe18d58c567acc62f28b7f58d7511ff91",
+    "engine/NativeModules/Vessel/Beacon.so": "4d78ee2d6570110b57fd4eacc75e001ae161f7f95cf87169fe067cfdf6352dfe",
+    "engine/NativeModules/Vessel/GATV.so": "b528cefc623d4200efcbfd0fc197366e9375c1a665f609f38dc37c2e7afe42a1",
+    "engine/NativeModules/Vessel/Gemini_Titan.so": "4813c92c5f466ce709aa1191bf5edb033a7cec4e4ef315635f3f3bdf1ec3f33f",
+    "engine/NativeModules/Vessel/gemini_astro.so": "5248ae708a2dcc17300398f44b576dad866aa6ef1bdfec9654d6bd9d18178dcd",
+    "engine/NativeModules/Vessel/gemini_eva.so": "144c8099a1c7f2ebe21e50e4abd02a1ff2bf0bb98cc87d462c80fdc701e06b74"
+  },
+  "launcher_checks_passed": 19,
+  "original_scenarios": 13,
+  "verified_flight_saves": 6,
+  "flight_replays_passed": 6,
+  "ascent_orbit": {
+    "perigee_km": 222.8443162336247,
+    "apogee_km": 321.5743293273775,
+    "elapsed_seconds": 600.0
+  },
+  "reentry": {
+    "first_contact_seconds": 1818.375,
+    "first_contact_airspeed_m_s": 7.449670370010165,
+    "latitude_deg": -8.6124134,
+    "longitude_deg": -118.2555261
+  },
+  "flight_cases": [
+    {
+      "case": "ascent",
+      "ticks": 9600,
+      "step": 0.0625
+    },
+    {
+      "case": "orbit-operations",
+      "ticks": 960,
+      "step": 0.0625
+    },
+    {
+      "case": "agena-undock",
+      "ticks": 480,
+      "step": 0.0625
+    },
+    {
+      "case": "eva",
+      "ticks": 960,
+      "step": 0.0625
+    },
+    {
+      "case": "pad-abort",
+      "ticks": 160,
+      "step": 0.0625
+    },
+    {
+      "case": "reentry",
+      "ticks": 19200,
+      "step": 0.125
+    }
+  ],
+  "launcher_manifest": [
+    {
+      "scenario": "Gemini Orbit.scn",
+      "paused": "0x800008 \"Orbiter | Gemini | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 226560.1m SPD 7395.2m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Gemini | RUNNING t=0.167s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 226563.5m SPD 7395.2m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 1.5499991364777088,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Orbit.scn"
+    },
+    {
+      "scenario": "Gemini III.scn",
+      "paused": "0x800008 \"Orbiter | Molly-Brown | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Molly-Brown | RUNNING t=0.133s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.14999918639659882,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini III.scn"
+    },
+    {
+      "scenario": "Gemini IV.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI-IV | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI-IV | RUNNING t=0.133s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.14999918639659882,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini IV.scn"
+    },
+    {
+      "scenario": "Gemini V.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI-V | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI-V | RUNNING t=0.117s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.13333261013031006,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini V.scn"
+    },
+    {
+      "scenario": "Gemini VII.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI-VII | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI-VII | RUNNING t=0.133s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.14999918639659882,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini VII.scn"
+    },
+    {
+      "scenario": "Gemini VIII.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.200s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.21666486281901598,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini VIII.scn"
+    },
+    {
+      "scenario": "Gemini VIa.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI-VIa | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI-VIa | RUNNING t=0.150s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.16666576266288757,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini VIa.scn"
+    },
+    {
+      "scenario": "Gemini X.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.233s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.2499980153515935,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Earth 1962/Gemini X.scn"
+    },
+    {
+      "scenario": "Gemini Docked.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342239.4m SPD 7273.1m/s | NAV none | fuel 420.000kg | x1.000 | DOCKED GATV\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.133s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342239.0m SPD 7273.1m/s | NAV none | fuel 420.000kg | x1.000 | DOCKED GATV\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.14999918639659882,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Docked.scn"
+    },
+    {
+      "scenario": "Gemini Docking.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342709.7m SPD 7274.6m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.233s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342709.7m SPD 7274.6m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.2499980153515935,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Docking.scn"
+    },
+    {
+      "scenario": "Gemini Launch and Dock.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.183s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.1999989151954651,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Launch and Dock.scn"
+    },
+    {
+      "scenario": "Gemini Launch.scn",
+      "paused": "0x800008 \"Orbiter | Gemini | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Gemini | RUNNING t=0.150s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL 34.7m SPD 0.0m/s | NAV none | fuel 118229.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.16666576266288757,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Launch.scn"
+    },
+    {
+      "scenario": "Gemini Reentry.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 434369.2m SPD 7035.1m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.100s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 434358.5m SPD 7035.1m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.1166660338640213,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Project Gemini/Gemini Reentry.scn"
+    },
+    {
+      "scenario": "01 Gemini III - Earth orbit T+10m.scn",
+      "paused": "0x800008 \"Orbiter | Molly-Brown | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 223123.4m SPD 7401.0m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Molly-Brown | RUNNING t=0.133s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 223122.6m SPD 7401.0m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.14999918639659882,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/01 Gemini III - Earth orbit T+10m.scn"
+    },
+    {
+      "scenario": "02 Gemini - OAMS and beacon released.scn",
+      "paused": "0x800008 \"Orbiter | Gemini | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 227886.9m SPD 7393.4m/s | NAV none | fuel 419.668kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Gemini | RUNNING t=0.117s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 227889.7m SPD 7393.4m/s | NAV none | fuel 419.668kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.13333261013031006,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/02 Gemini - OAMS and beacon released.scn"
+    },
+    {
+      "scenario": "03 Gemini - Agena undocked.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342145.4m SPD 7273.5m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.100s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 342145.1m SPD 7273.5m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.11666540522128344,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/03 Gemini - Agena undocked.scn"
+    },
+    {
+      "scenario": "04 Gemini - EVA in orbit.scn",
+      "paused": "0x800008 \"Orbiter | Gemini-PLT | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 227898.2m SPD 7393.4m/s | NAV none | fuel 20.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Gemini-PLT | RUNNING t=0.200s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 227903.0m SPD 7393.4m/s | NAV none | fuel 20.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.21666549146175385,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/04 Gemini - EVA in orbit.scn"
+    },
+    {
+      "scenario": "05 Gemini III - crew ejection.scn",
+      "paused": "0x800008 \"Orbiter | Molly-Brown-CDR | PAUSED t=0.000s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 94.9m SPD 30.4m/s | NAV none | fuel 0.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | Molly-Brown-CDR | RUNNING t=0.100s | RCS ROT 0% | MAIN 0% HOV 0% | AERO OFF | AIRBORNE AGL 92.1m SPD 31.3m/s | NAV none | fuel 0.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.1166660338640213,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/05 Gemini III - crew ejection.scn"
+    },
+    {
+      "scenario": "06 Gemini - Pacific splashdown.scn",
+      "paused": "0x800008 \"Orbiter | GEMINI | PAUSED t=0.000s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL -0.3m SPD 0.0m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1280x720+0+0  +0+0",
+      "resized": "1180x720",
+      "resumed": "0x800008 \"Orbiter | GEMINI | RUNNING t=0.183s | RCS LIN 0% | MAIN 0% HOV 0% | AERO OFF | LANDED AGL -0.3m SPD 0.0m/s | NAV none | fuel 420.000kg | x1.000\": (\"Orbiter: native production engine / Sol / ShuttlePB\" \"Orbiter: native production engine / Sol / ShuttlePB\")  1180x720+0+0  +0+0",
+      "simulated_seconds": 0.1999989151954651,
+      "audio_backend": "PulseAudio",
+      "result": "passed",
+      "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "path": "resources/Scenarios/Gemini - Native Linux Saves/06 Gemini - Pacific splashdown.scn"
+    }
+  ],
+  "limits": [
+    "Representative flights, not a continuous launch/rendezvous/return mission",
+    "Original Gemini 4.5 simulation and incomplete original panel artwork",
+    "Monochrome native ADI graticule; original ADI/side-panel texture maps absent upstream",
+    "Windows and macOS native builds and Windows parity unverified"
+  ]
+}

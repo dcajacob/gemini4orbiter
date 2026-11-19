@@ -2,11 +2,15 @@
 #define __GEMINI_PANEL_H
 
 #include "resource.h"
-#include <OrbiterAPI.h>
-#include <VesselAPi.h>
+#include "GeminiOrbiter.h"
+#include "GeminiOrbiter.h"
 #include "multi_stage4.h"
 #include "panel_graphics.h"
+#ifdef GEMINI_NATIVE_ORBITER
+#include "NativeADI.h"
+#else
 #include "ADI.h"
+#endif
 
 const int nsurf = 5; // number of bitmap handles
 
@@ -60,7 +64,6 @@ private:
 Gemini_ControlPanel::Gemini_ControlPanel(){
 	int i = 0;
 	for (i = 0; i < nsurf; i++) srf[i] = 0;
-	adi = new ADI(820, 540);
 	adi = new ADI(338, 1288);
 	vcmesh_tpl = NULL;
 	attitude_mode = ATTMODE_RATECMD;
@@ -150,7 +153,7 @@ bool Gemini_ControlPanel::PanelMouseEvent (VESSEL2 *vessel, int id, int event, i
 bool Gemini_ControlPanel::LoadPanel (VESSEL2 *vessel, int id)
 {
 	ReleaseSurfaces();
-	HBITMAP hBmp;
+	HBITMAP hBmp = nullptr;
 	switch (id) {	
 	case 0:
 		oapiCameraSetAperture(RAD*(60/2));

@@ -1,10 +1,10 @@
 #ifndef __MULTI_STAGE_H
 #define __MULTI_STAGE_H
 
-#include "orbitersdk.h"
+#include "GeminiOrbiter.h"
 #include "common_addon.h"
-#include "matrix.h"
-#include "vectors.h"
+#include "Matrix.h"
+#include "Vectors.h"
 #include <cmath>
 #include <cstdio>
 #include <fstream>
@@ -167,7 +167,7 @@ void TetherCalc2(VESSEL *Anchor, VESSEL *Tether, double TetherLength)
 
 }
 
-void AddImpulse(VESSEL *vessel, VECTOR3 &Impulse_Pt, VECTOR3 &Impulse_Force)
+void AddImpulse(VESSEL *vessel, const VECTOR3 &Impulse_Pt, const VECTOR3 &Impulse_Force)
 {
 	VESSELSTATUS sVessel;
 	VECTOR3 PMI   = _V(0,0,0);
@@ -260,6 +260,7 @@ void TetherCalc3(VESSEL *Anchor, VESSEL *Tether, double TetherLength)
 
 }
 */
+#ifndef GEMINI_NATIVE_ORBITER
 void DrawNeedle (HDC hDC, int x, int y, double rad, double angle, HPEN pen0, HPEN pen1)
 {
 	double dx = rad * cos(angle), dy = rad * sin(angle);
@@ -274,6 +275,7 @@ void DrawNeedle (HDC hDC, int x, int y, double rad, double angle, HPEN pen0, HPE
 
 
 
+#endif
 void DrawNumbers(SURFHANDLE surf, SURFHANDLE numbers, double number, int x2, int y2, int x1, int y1, int w, int h) {
 	int num1 = 0;
 	int num2 = 0;
@@ -456,6 +458,7 @@ private:
 Multi_Stage::Multi_Stage(OBJHANDLE hObj)
 : COMMON_VESSEL(hObj)
 {
+	cStage=nullptr; cPanel=nullptr; hVis=nullptr;
 	this->GetClassName();
 }
 
