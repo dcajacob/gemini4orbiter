@@ -16,7 +16,7 @@ Measured milestones:
 - Original L/J undocking, J equipment separation, D/D four-motor retrofire and J
   adapter separation. The original tanks were used without refilling.
 - Retrofire orbit approximately 44 x 351 km. Deorbit was timed for the Pacific.
-- Entry peak drag deceleration 6.18 g. The pilot banks the original lift vector
+- Entry peak drag deceleration approximately 6.18 g in the accepted save chain. The pilot banks the original lift vector
   upward and stops attitude commands below 20 km before parachute descent.
 - Splashdown near 19.7761 N, 142.1289 E, at 6.37 m/s after automatic main release
   below 3 m. Final capsule settled at zero speed with 32.305 kg RCS fuel remaining.
@@ -42,11 +42,11 @@ explicit SDK index, forwards focus after stage replacement, reads angular rates
 for the rate controller, and uses the intended 35 kg RCS tank instead of the
 420 kg OAMS constant. These changes restored actual manual attitude control.
 
-The engine patch also fixes legacy backward drag: `SetCW`'s negative-Z coefficient
-was stored but never selected. The previous entry trial delayed deceleration
-until chute altitude; the corrected trial gives the 6.18 g peak above. This
-engine change is included in `Native/orbiter-integration.patch`, not a separate
-unpublished edit to the main Orbiter checkout. Entry phases 19 onward use it.
+The engine patch selects the negative-Z axial drag coefficient in the legacy
+`SetCW` model when the capsule travels backward along its body axis. The entry
+pilot also rolls the capsule to direct its existing lift upward. Both changes
+were in use from phase 19 of the accepted chain. The controlled replays below
+measure their effects separately.
 
 Main parachutes previously reloaded without their mesh or drag. Deployment phase,
 inflation progress and remaining reefing time are now saved/restored for both
@@ -100,3 +100,55 @@ real thrusters and the Agena's real kill-rotation mode. `orbit.py` supplies
 approximate two-body finite-burn targeting (NumPy/SciPy); native Orbiter performs
 all actual propagation. Coarse attitude/translation pulses caused fuel-wasting
 limit cycles during development; terminal approach and docking use 0.03125 s.
+
+## Same-save entry comparisons
+
+Each case starts from the phase 18 adapter-separation save at 106.566 km. The
+runner checks the spacecraft section of the input against the fixture. The
+analyzer compares initial epoch, position, velocity, attitude, angular rates,
+mass and fuel, then reads every native physics sample through 4,000 s at 1/32 s
+per step. The runs use a single engine session each. Original chute logic and the
+20 km attitude-control cutoff apply in every case.
+
+| Axial drag | Commanded bank | Pre-drogue peak (g) | Peak including chutes (g) | Drogue airspeed (m/s) | Splashdown |
+|---|---|---:|---:|---:|---|
+| Original | Original | 41.55 | 95.46 | 3,482 | 18.85° N, 139.73° E |
+| Corrected | Original | 11.87 | 11.87 | 273 | 17.66° N, 136.84° E |
+| Original | Lift up | 1.55 | 5.19 | 598 | 26.16° N, 149.80° W |
+| Corrected | Lift up | 5.07 | 6.17 | 243 | 19.78° N, 142.13° E |
+
+Peak load is the magnitude of the reported aerodynamic acceleration,
+`hypot(lift, drag) / (mass × 9.80665)`. The bank command reversed the mean radial
+lift during high-speed atmospheric flight (airspeed above 2,000 m/s and dynamic
+pressure above 1,000 Pa) with either drag model. With upward lift the original
+drag gave a lower peak, but drogue deployment came 1,155 s later and the two
+splashdowns were about 6,930 km apart by great-circle distance. In the original
+bank and drag case the largest load came **after** drogue deployment. The model
+recorded surface contact for all four runs. It provides no crew-survival
+qualification.
+
+To reproduce, stage two separate Gemini-capable runtimes from the same source
+and assets. Use the integration source described in [the build notes](../../README.md)
+and its Gemini patch for the fixed engine. For the control build, restore the
+`vd_forw*fabs(vnorm.z)` axial term in `Vessel::UpdateAerodynamicForces_OLD`
+before building. Build the renderer and Gemini modules against the corresponding
+engine SDK for each runtime. The qualified integration snapshot is available
+in the local `out/gemini-native/engine-source` checkout. Each runtime needs its
+own writable `resources/Script` directory.
+
+From the Gemini repository root, point `work` at a fresh SSD scratch directory
+and run the four cases under the private 5% audio sink.
+
+```sh
+work=$(mktemp -d /var/tmp/dan-builds/gemini-entry.XXXXXXXX)
+export TMPDIR="$work"
+Native/verification/quiet.sh "$work/audio" \
+  python3 Native/verification/gemini8/compare_entry.py \
+  /path/to/original-runtime /path/to/fixed-runtime "$work/runs"
+```
+
+The runner writes the two input hashes, a one-second trace, the full-rate force
+and state evidence, deployment events and the final save for each case. Recheck
+an existing run with `python3 Native/verification/gemini8/analyze_entry.py "$work/runs"`.
+Two independent sets of four runs produced identical full-rate force and state
+files and final saves per case. [Recorded results and binary hashes](entry-comparison.json).

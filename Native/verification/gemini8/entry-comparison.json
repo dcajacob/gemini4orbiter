@@ -1,0 +1,472 @@
+{
+  "orbiter_integration_base": "0702cca393b81b2dcc4722b6de3e905eeae91256",
+  "integration_patch_sha256": "2ccabc46d14b7541c79157bcb2207a682a15a9e7a6f3ee244b7ad402557a8290",
+  "gemini_module_source": "e3a2b65743eb0c6989321f64e25b1748f7d43738",
+  "renderer": {
+    "vendor": "Mesa",
+    "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+    "version": "4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3",
+    "client_width": 1280,
+    "client_height": 720
+  },
+  "binary_sha256": {
+    "original": {
+      "engine/orbiter-production": "785bfaf5b9f88584033efd6c8e01d01b8559422aaf8d4193dd8199d7b2923a1d",
+      "engine/liborbiter_production_vessels.so": "4ef21f7096692d18351c07b2b1dbb0adb6428f98d15fc1117ae588a286773903",
+      "engine/native-sdk/OrbiterNativeBuild.h": "95e7f79267ac403b86067cc9016b018199e01c7b7d879144abe56d6c90c2c5ee",
+      "engine/NativeModules/Vessel/Gemini_Titan.so": "fe4ab7ec911720425a6ff1b991cf2583b7ecd7648b0c0c831f13fd0925b6c1c4",
+      "engine/NativeModules/Graphics/OGLClient.so": "95829bafbf91b3125e8f9690414c39fff9a6c57e7c1e20529de8ebbc2b4027a3",
+      "engine/NativeModules/Plugin/XRSound.so": "dd7878134b89508efc8b21da2473b75283ec688ab3f8d8b9e8e85db3cda996c9"
+    },
+    "fixed": {
+      "engine/orbiter-production": "74f0bd94596c406ca20a8f2c2fd5e474feaac09f188117d83b0645b2484586a6",
+      "engine/liborbiter_production_vessels.so": "391ff8e272aaeb581ef384b1c0ec2363482cafd2890a7914094eee7a49ce910a",
+      "engine/native-sdk/OrbiterNativeBuild.h": "a18056f8a785285d33d7d30215250264754e11b454b17c3959d44688984d2181",
+      "engine/NativeModules/Vessel/Gemini_Titan.so": "36fa7204f7a4742e40c6e8569de502f8736635572706b1573ba2be917a43832b",
+      "engine/NativeModules/Graphics/OGLClient.so": "3f0ff2a56e7f938ba8bcda80568d698793e071cd8763bc9981bcec993eb3855c",
+      "engine/NativeModules/Plugin/XRSound.so": "e92f5b673a5ab429a43a7765c26eb16165ed99120e46e5d9e65544553bf65c4a"
+    }
+  },
+  "cases": [
+    {
+      "drag": "fixed",
+      "bank_up": false,
+      "controller": {
+        "mode": "orient",
+        "retrograde": true,
+        "lift_up": false,
+        "angular_acceleration": 0.3,
+        "maxrate": 0.04,
+        "control_until_altitude": 20000
+      },
+      "initial_save_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+      "pilot_body_sha256": "817a442bf8d9894fe9efe2469946142d0aeb436a01f5ecdd1f86553535ecdbc0",
+      "duration_s": 4000,
+      "fixed_step_s": 0.03125,
+      "resumed_during_run": false,
+      "initial_state": {
+        "mjd": 39199.6833004917,
+        "rx": -6385169.898986816,
+        "ry": 202188.64299999923,
+        "rz": 1071315.0450000763,
+        "vx": -484.36450000000013,
+        "vy": 6137.9337,
+        "vz": -4947.096499999996,
+        "m11": -0.5333797612022527,
+        "m12": -0.845846360930698,
+        "m13": -0.007068524607245706,
+        "m21": 0.4942911757605533,
+        "m22": -0.3048905955897281,
+        "m23": -0.8140749095053789,
+        "m31": 0.6864271730526681,
+        "m32": -0.4377049901717324,
+        "m33": 0.5807168653256818,
+        "wx": 0.0009878563566287906,
+        "wy": -0.0006824237375297829,
+        "wz": -0.0003804817769347638,
+        "mass": 1892.989605,
+        "fuel": 34.989605
+      },
+      "peak": {
+        "seconds": 409.46875,
+        "altitude_m": 31989.82657897938,
+        "airspeed_m_s": 3160.483731006635
+      },
+      "peak_before_drogue": {
+        "seconds": 409.46875,
+        "altitude_m": 31989.82657897938,
+        "airspeed_m_s": 3160.483731006635
+      },
+      "drogue_state": {
+        "seconds": 463.5625,
+        "altitude_m": 13569.05342501495,
+        "airspeed_m_s": 273.30382382003194
+      },
+      "main_state": {
+        "seconds": 1055.0,
+        "altitude_m": 3269.4929863717407,
+        "airspeed_m_s": 12.26626810814746
+      },
+      "peak_aerodynamic_g": 11.869741739330733,
+      "peak_before_drogue_g": 11.869741739330733,
+      "mean_radial_lift_g": -0.24193214668549953,
+      "radial_lift_window_s": 192.0,
+      "peak_dynamic_pressure_Pa": 67865.88379510009,
+      "first_contact": {
+        "seconds": 2933.65625,
+        "altitude_m": 0.992364564910531,
+        "airspeed_m_s": 6.436663919800284
+      },
+      "first_drag": {
+        "seconds": 0.03125,
+        "drag_N": 16.140151241392665,
+        "dynamic_pressure_Pa": 4.9814486145226615
+      },
+      "final_speed_m_s": 0.0,
+      "final_ground": true,
+      "final_fuel_kg": 33.078835769229286,
+      "coordinates_lon_lat_deg": [
+        136.8361434,
+        17.6563009
+      ],
+      "drogue_seconds": 463.5625,
+      "main_seconds": 1055.0,
+      "chute_events": [
+        {
+          "seconds": "0.031250000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "463.562500000",
+          "size": "9.000000000"
+        },
+        {
+          "seconds": "1054.968750000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "1055.000000000",
+          "size": "12.000000000"
+        },
+        {
+          "seconds": "2933.156250000",
+          "size": "2.000000000"
+        }
+      ],
+      "save_sha256": "91165c1afd8e3d2d0d52225043f9988566111fe098d6da0307aadb6356db10ae",
+      "state_sha256": "1ac13f77171a2fbb3265df8e8c0671d7a5194fe207c8be0e8eceb3a8b825c32b",
+      "forces_sha256": "7a5bab36bdc4313cf7e75c07ae6a9f09212f67581d19a8a779c27e599dd09dc5",
+      "trace_sha256": "9c571135b94fcfb071e966bce704527eff14ba6cae7fe0f66171d2be1a33ba25"
+    },
+    {
+      "drag": "fixed",
+      "bank_up": true,
+      "controller": {
+        "mode": "orient",
+        "retrograde": true,
+        "lift_up": true,
+        "angular_acceleration": 0.3,
+        "maxrate": 0.04,
+        "control_until_altitude": 20000
+      },
+      "initial_save_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+      "pilot_body_sha256": "817a442bf8d9894fe9efe2469946142d0aeb436a01f5ecdd1f86553535ecdbc0",
+      "duration_s": 4000,
+      "fixed_step_s": 0.03125,
+      "resumed_during_run": false,
+      "initial_state": {
+        "mjd": 39199.6833004917,
+        "rx": -6385169.898986816,
+        "ry": 202188.64299999923,
+        "rz": 1071315.0450000763,
+        "vx": -484.36450000000013,
+        "vy": 6137.9337,
+        "vz": -4947.096499999996,
+        "m11": -0.5333797612022527,
+        "m12": -0.845846360930698,
+        "m13": -0.007068524607245706,
+        "m21": 0.4942911757605533,
+        "m22": -0.3048905955897281,
+        "m23": -0.8140749095053789,
+        "m31": 0.6864271730526681,
+        "m32": -0.4377049901717324,
+        "m33": 0.5807168653256818,
+        "wx": 0.0009878563566287906,
+        "wy": -0.0006824237375297829,
+        "wz": -0.0003804817769347638,
+        "mass": 1892.989605,
+        "fuel": 34.989605
+      },
+      "peak": {
+        "seconds": 615.90625,
+        "altitude_m": 13200.555284905247,
+        "airspeed_m_s": 182.22271517799638
+      },
+      "peak_before_drogue": {
+        "seconds": 505.59375,
+        "altitude_m": 36700.42899083067,
+        "airspeed_m_s": 2975.80349955234
+      },
+      "drogue_state": {
+        "seconds": 614.0,
+        "altitude_m": 13564.025024476461,
+        "airspeed_m_s": 243.3700628722981
+      },
+      "main_state": {
+        "seconds": 1206.78125,
+        "altitude_m": 3269.750008941628,
+        "airspeed_m_s": 12.264468266946064
+      },
+      "peak_aerodynamic_g": 6.173993148545351,
+      "peak_before_drogue_g": 5.06594339633349,
+      "mean_radial_lift_g": 0.174648071740573,
+      "radial_lift_window_s": 292.5,
+      "peak_dynamic_pressure_Pa": 28883.632252527714,
+      "first_contact": {
+        "seconds": 3085.90625,
+        "altitude_m": 0.9737586490809917,
+        "airspeed_m_s": 6.359017171419024
+      },
+      "first_drag": {
+        "seconds": 0.03125,
+        "drag_N": 16.140151241392665,
+        "dynamic_pressure_Pa": 4.9814486145226615
+      },
+      "final_speed_m_s": 0.0,
+      "final_ground": true,
+      "final_fuel_kg": 32.30518192307484,
+      "coordinates_lon_lat_deg": [
+        142.1289679,
+        19.7761554
+      ],
+      "drogue_seconds": 614.0,
+      "main_seconds": 1206.78125,
+      "chute_events": [
+        {
+          "seconds": "0.031250000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "614.000000000",
+          "size": "9.000000000"
+        },
+        {
+          "seconds": "1206.750000000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "1206.781250000",
+          "size": "12.000000000"
+        },
+        {
+          "seconds": "3085.406250000",
+          "size": "2.000000000"
+        }
+      ],
+      "save_sha256": "76fc409d3e65eae6f4f1424b71d4e2bc78ca826d12eb6a78e64a5fa661d572fc",
+      "state_sha256": "dd218bc159d0a86f73cead3197b34287e9a343a41fcd18de52564bcc4b0bf71b",
+      "forces_sha256": "4828ff797afd6b025bbcf3fdcd77c46d2717faf8e185421fc094ff18d4931721",
+      "trace_sha256": "8ccd72d7770d119a780ff4a5213e95e0b4778f7ad2dee9d0a16f9cb4ee2c255d"
+    },
+    {
+      "drag": "original",
+      "bank_up": false,
+      "controller": {
+        "mode": "orient",
+        "retrograde": true,
+        "lift_up": false,
+        "angular_acceleration": 0.3,
+        "maxrate": 0.04,
+        "control_until_altitude": 20000
+      },
+      "initial_save_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+      "pilot_body_sha256": "817a442bf8d9894fe9efe2469946142d0aeb436a01f5ecdd1f86553535ecdbc0",
+      "duration_s": 4000,
+      "fixed_step_s": 0.03125,
+      "resumed_during_run": false,
+      "initial_state": {
+        "mjd": 39199.6833004917,
+        "rx": -6385169.898986816,
+        "ry": 202188.64299999923,
+        "rz": 1071315.0450000763,
+        "vx": -484.36450000000013,
+        "vy": 6137.9337,
+        "vz": -4947.096499999996,
+        "m11": -0.5333797612022527,
+        "m12": -0.845846360930698,
+        "m13": -0.007068524607245706,
+        "m21": 0.4942911757605533,
+        "m22": -0.3048905955897281,
+        "m23": -0.8140749095053789,
+        "m31": 0.6864271730526681,
+        "m32": -0.4377049901717324,
+        "m33": 0.5807168653256818,
+        "wx": 0.0009878563566287906,
+        "wy": -0.0006824237375297829,
+        "wz": -0.0003804817769347638,
+        "mass": 1892.989605,
+        "fuel": 34.989605
+      },
+      "peak": {
+        "seconds": 447.9375,
+        "altitude_m": 10993.646181198768,
+        "airspeed_m_s": 2413.0837318024687
+      },
+      "peak_before_drogue": {
+        "seconds": 444.90625,
+        "altitude_m": 15550.266700884327,
+        "airspeed_m_s": 3896.04168659838
+      },
+      "drogue_state": {
+        "seconds": 446.15625,
+        "altitude_m": 13563.135046313517,
+        "airspeed_m_s": 3482.254718975034
+      },
+      "main_state": {
+        "seconds": 517.21875,
+        "altitude_m": 3268.4405398564413,
+        "airspeed_m_s": 46.890469752743876
+      },
+      "peak_aerodynamic_g": 95.46234066255421,
+      "peak_before_drogue_g": 41.550836934095,
+      "mean_radial_lift_g": -1.0521137861315408,
+      "radial_lift_window_s": 219.28125,
+      "peak_dynamic_pressure_Pa": 1573553.1434481319,
+      "first_contact": {
+        "seconds": 977.3125,
+        "altitude_m": 0.7880935845896602,
+        "airspeed_m_s": 7.9106146019407255
+      },
+      "first_drag": {
+        "seconds": 0.03125,
+        "drag_N": 2.422876814600657,
+        "dynamic_pressure_Pa": 4.981448915888232
+      },
+      "final_speed_m_s": 0.0,
+      "final_ground": true,
+      "final_fuel_kg": 33.39037423076799,
+      "coordinates_lon_lat_deg": [
+        139.7280093,
+        18.8496423
+      ],
+      "drogue_seconds": 446.15625,
+      "main_seconds": 517.21875,
+      "chute_events": [
+        {
+          "seconds": "0.031250000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "446.156250000",
+          "size": "9.000000000"
+        },
+        {
+          "seconds": "517.187500000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "517.218750000",
+          "size": "12.000000000"
+        },
+        {
+          "seconds": "977.031250000",
+          "size": "2.000000000"
+        }
+      ],
+      "save_sha256": "b9d6113153b5c7f47fe0b3d4c3fbd5f3498408c6e15431e1eb8d3961c48ad991",
+      "state_sha256": "3b972739e4ba42caa274ca95452f48b0eed774e285f2f0b1204d8ee3c7737c02",
+      "forces_sha256": "db813e0a5f3adc37aa833d5d56a9f29e8d028dfb425fb2e5b71e1b73afd8cc57",
+      "trace_sha256": "bcc7660744dce6ffeb9e7d4d812bc907d0a968bb5c44913882cd89015384e1ee"
+    },
+    {
+      "drag": "original",
+      "bank_up": true,
+      "controller": {
+        "mode": "orient",
+        "retrograde": true,
+        "lift_up": true,
+        "angular_acceleration": 0.3,
+        "maxrate": 0.04,
+        "control_until_altitude": 20000
+      },
+      "initial_save_sha256": "77319fcc1a3f13cc7ccff46c012097289592ac27bf595d053a58e3986b6ade01",
+      "pilot_body_sha256": "817a442bf8d9894fe9efe2469946142d0aeb436a01f5ecdd1f86553535ecdbc0",
+      "duration_s": 4000,
+      "fixed_step_s": 0.03125,
+      "resumed_during_run": false,
+      "initial_state": {
+        "mjd": 39199.6833004917,
+        "rx": -6385169.898986816,
+        "ry": 202188.64299999923,
+        "rz": 1071315.0450000763,
+        "vx": -484.36450000000013,
+        "vy": 6137.9337,
+        "vz": -4947.096499999996,
+        "m11": -0.5333797612022527,
+        "m12": -0.845846360930698,
+        "m13": -0.007068524607245706,
+        "m21": 0.4942911757605533,
+        "m22": -0.3048905955897281,
+        "m23": -0.8140749095053789,
+        "m31": 0.6864271730526681,
+        "m32": -0.4377049901717324,
+        "m33": 0.5807168653256818,
+        "wx": 0.0009878563566287906,
+        "wy": -0.0006824237375297829,
+        "wz": -0.0003804817769347638,
+        "mass": 1892.989605,
+        "fuel": 34.989605
+      },
+      "peak": {
+        "seconds": 1789.125,
+        "altitude_m": 10538.359008093365,
+        "airspeed_m_s": 182.68302366304815
+      },
+      "peak_before_drogue": {
+        "seconds": 1709.0625,
+        "altitude_m": 21160.786449138075,
+        "airspeed_m_s": 1176.382890806153
+      },
+      "drogue_state": {
+        "seconds": 1769.0,
+        "altitude_m": 13567.642220420763,
+        "airspeed_m_s": 597.5198794837113
+      },
+      "main_state": {
+        "seconds": 1916.3125,
+        "altitude_m": 3267.9121141405776,
+        "airspeed_m_s": 46.87269418760537
+      },
+      "peak_aerodynamic_g": 5.193810552304946,
+      "peak_before_drogue_g": 1.5484686588893888,
+      "mean_radial_lift_g": 0.2648552923226734,
+      "radial_lift_window_s": 1404.71875,
+      "peak_dynamic_pressure_Pa": 52886.63271607912,
+      "first_contact": {
+        "seconds": 2376.5,
+        "altitude_m": 0.8530229022726417,
+        "airspeed_m_s": 8.221501856327993
+      },
+      "first_drag": {
+        "seconds": 0.03125,
+        "drag_N": 2.422876814600657,
+        "dynamic_pressure_Pa": 4.981448915888232
+      },
+      "final_speed_m_s": 0.0,
+      "final_ground": true,
+      "final_fuel_kg": 31.45364346153572,
+      "coordinates_lon_lat_deg": [
+        -149.7952345,
+        26.1606734
+      ],
+      "drogue_seconds": 1769.0,
+      "main_seconds": 1916.3125,
+      "chute_events": [
+        {
+          "seconds": "0.031250000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "1769.000000000",
+          "size": "9.000000000"
+        },
+        {
+          "seconds": "1916.281250000",
+          "size": "2.000000000"
+        },
+        {
+          "seconds": "1916.312500000",
+          "size": "12.000000000"
+        },
+        {
+          "seconds": "2376.218750000",
+          "size": "2.000000000"
+        }
+      ],
+      "save_sha256": "644c2ad37dfe8903a20b6f9fc77a01c5a38e0e5ceb4205f463bfa532373c461d",
+      "state_sha256": "c62eb3ae880d03fa505f19b67adf882a69f6faeb7307eba2d5e499f126ff940b",
+      "forces_sha256": "d437dc6a80d51e2a587c50cae8dc9c3fe312c694b3252c1646215345a74e1246",
+      "trace_sha256": "af3d9b165e876a5bfa0ac5c61383d34a6adb67dc6f7d228dc971154db11cea64"
+    }
+  ]
+}
