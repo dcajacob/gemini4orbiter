@@ -182,3 +182,24 @@ Native/verification/quiet.sh "$work/inflation-audio" \
 python3 Native/verification/gemini8/check_inflation.py \
   "$work/runs/fixed-bank-up" "$work/inflation-resume"
 ```
+
+### Pull request check
+
+Every pull request into `codex/native-linux-opengl` builds the test merge with the
+current tip of Orbiter's merged OpenGL branch, `codex/osiris-pre-apollo-physics`.
+The job builds the engine, OpenGL client and Gemini modules together, then stages
+checksum-verified stock data. It runs the uninterrupted phase-18 entry and the
+committed mid-inflation restart under Xvfb with a private PulseAudio null sink at 5%.
+
+The check compares drag at all 64,000 steps (32 Hz), including first contact and
+settling. Both flights must reach splashdown within one step of each other.
+The limits are 1 N of drag difference and 0.05 m/s of first-contact airspeed
+difference. The Actions summary shows the measured peaks and contact times.
+The artifact includes the two tested revisions, audio level, renderer and flight logs.
+
+To repeat the comparison with a staged runtime, use a new output directory:
+
+```sh
+bash Native/verification/quiet.sh "$work/audio" \
+  python3 Native/verification/gemini8/replay_inflation.py "$runtime" "$work/flights"
+```

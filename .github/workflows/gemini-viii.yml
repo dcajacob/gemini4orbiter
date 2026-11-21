@@ -1,0 +1,87 @@
+name: Gemini VIII native OpenGL
+
+on:
+  pull_request:
+    branches: [codex/native-linux-opengl]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gemini-inflation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  replay:
+    name: Mid-inflation drag through splashdown
+    runs-on: ubuntu-24.04
+    container: ubuntu:26.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Install compiler, Mesa and virtual desktop
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config \
+            git ca-certificates curl python3 unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
+            xorg-dev libwayland-dev wayland-protocols libxkbcommon-dev libglx-mesa0 libgl1-mesa-dri \
+            xvfb xauth pulseaudio pulseaudio-utils fonts-dejavu-core
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: dcajacob/orbiter-cross-platform
+          ref: codex/osiris-pre-apollo-physics
+          path: orbiter-source
+          persist-credentials: false
+      - name: Build Orbiter, OpenGL and Gemini from source
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE/orbiter-source"
+          mkdir -p evidence
+          git rev-parse HEAD > evidence/gemini-commit.txt
+          git -C orbiter-source rev-parse HEAD > evidence/orbiter-commit.txt
+          bash .github/native-linux/build.sh orbiter-source "$RUNNER_TEMP"
+      - name: Stage verified runtime assets
+        run: bash .github/native-linux/prepare-runtime.sh "$RUNNER_TEMP"
+      - name: Fly both entries and compare every physics step
+        run: |
+          mkdir -p "$RUNNER_TEMP/pulse-home"
+          HOME="$RUNNER_TEMP/pulse-home" bash Native/verification/quiet.sh "$PWD/evidence/audio" \
+            python3 Native/verification/gemini8/replay_inflation.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/flights"
+      - name: Collect results and diagnostics
+        if: always()
+        run: |
+          mkdir -p evidence
+          flights="$RUNNER_TEMP/flights"
+          if [[ -f "$flights/comparison.json" ]]; then
+            cp "$flights/comparison.json" evidence/
+            {
+              echo "Orbiter $(cat evidence/orbiter-commit.txt)"
+              echo ' ```json'
+              cat evidence/comparison.json
+              echo ' ```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          for case in fixed-bank-up mid-inflation; do
+            if [[ -d "$flights/$case" ]]; then
+              mkdir -p "evidence/$case"
+              for file in console.log runner.log evidence/renderer-info.json evidence/numerics.json; do
+                if [[ -f "$flights/$case/$file" ]]; then
+                  tail -c 32768 "$flights/$case/$file" > "evidence/$case/${file##*/}"
+                fi
+              done
+            fi
+          done
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: gemini-viii-inflation-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
