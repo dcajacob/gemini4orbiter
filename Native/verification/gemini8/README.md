@@ -170,7 +170,9 @@ repository root after the four-case comparison. The checker compares the resumed
 flight with the uninterrupted fixed-drag, upward-lift case. Across 64,000 steps
 the maximum airborne drag difference was 0.0444 N, and the maximum difference
 including surface contact was 0.711 N. Touchdown occurred on the same physics
-step in both runs. [Replay measurements and hashes](inflation-replay.json).
+step in both runs. A second build from the public Orbiter sources and Gemini
+commit `adbba802` reproduced all the comparison measurements using the pinned
+dependency archives. [Replay measurements and hashes](inflation-replay.json).
 
 ```sh
 Native/verification/quiet.sh "$work/inflation-audio" \

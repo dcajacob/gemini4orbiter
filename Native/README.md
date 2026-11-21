@@ -30,7 +30,10 @@ The tree ID covers every tracked file in the fixed engine used for the four
 entry comparisons. Build Orbiter, its OpenGL renderer and the Gemini modules
 with the same configuration. The renderer needs the Linux OpenGL and X11
 development packages. The dependency helper downloads and verifies its pinned
-source archives.
+source archives. The qualification build used GCC 15.2 and cached copies of
+the pinned Lua, ImGui and ImPlot archives. To reuse a cache, pass the absolute
+paths in `ORBITER_NATIVE_LUA_ARCHIVE`, `ORBITER_NATIVE_UI_ARCHIVE` and
+`ORBITER_NATIVE_PLOT_ARCHIVE` as CMake cache variables for the engine build.
 
 ```sh
 cmake -S "$engine/Src/Orbiter/Production" -B "$work/engine-build" -G Ninja \
