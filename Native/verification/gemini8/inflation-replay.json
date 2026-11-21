@@ -1,0 +1,32 @@
+{
+  "save_sha256": "bbfbad566023399ff3c03364eb58bb68b2fd2b2b3c51f094caccf31eae8792b7",
+  "gemini_module_sha256": "0654ec577d4ccd2587c0fcdeb5c77e90c057b194919fa6df6939ac2af5449cef",
+  "legacy_force_engine_sha256": "391ff8e272aaeb581ef384b1c0ec2363482cafd2890a7914094eee7a49ce910a",
+  "continuous_state_sha256": "dd218bc159d0a86f73cead3197b34287e9a343a41fcd18de52564bcc4b0bf71b",
+  "resumed_state_sha256": "734c1f059f6f2ab8d9463a6c7054445e2a94c6b0075b810fc12dc7baa3454133",
+  "resumed_final_save_sha256": "d8c38cbe52b3f0605180538f1e97a82d3e10f35f3ce0b8cfffded86477a2fe1e",
+  "fixed_step_s": 0.03125,
+  "audio": "private PulseAudio null sink, 5%",
+  "renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+  "comparison": {
+    "reference_start_tick": 38648,
+    "first_continuous_drag_N": 26844.422613690695,
+    "first_resumed_drag_N": 26844.448804043135,
+    "compared_steps": 64000,
+    "peak_absolute_drag_difference_N": {
+      "initial_20s": 0.044375044028129196,
+      "airborne": 0.044375044028129196,
+      "all": 0.7103581120723703
+    },
+    "first_contact": {
+      "continuous": {
+        "seconds_after_save": 1878.15625,
+        "airspeed_m_s": 6.359017171419024
+      },
+      "resumed": {
+        "seconds_after_save": 1878.15625,
+        "airspeed_m_s": 6.330476195327209
+      }
+    }
+  }
+}

@@ -15,6 +15,17 @@ FIXTURE = ROOT / "fixtures/18-adapter-separation/saved.scn"
 STEP = 1 / 32
 DURATION = 4000
 G = 9.80665
+
+# Rounded phase-18 reference measurements from the qualified four-case replay.
+# Each row is (splashdown longitude, latitude, first-contact airspeed in m/s).
+LANDINGS = {
+    ("original", False): (139.7280, 18.8496, 7.91),
+    ("fixed", False): (136.8361, 17.6563, 6.44),
+    ("original", True): (-149.7952, 26.1607, 8.22),
+    ("fixed", True): (142.1290, 19.7762, 6.36),
+}
+LANDING_RADIUS_KM = 25.0
+CONTACT_TOLERANCE_M_S = 1.0
 INITIAL_COLUMNS = """
 mjd rx ry rz vx vy vz m11 m12 m13 m21 m22 m23 m31 m32 m33 wx wy wz mass fuel
 """.split()
@@ -139,8 +150,7 @@ def analyze(case):
 
 def verify(reports):
     cases = {(r["drag"], r["bank_up"]): r for r in reports}
-    expected = {(drag, up) for drag in ("fixed", "original") for up in (False, True)}
-    check(len(reports) == 4 and cases.keys() == expected, "Expected four distinct drag/bank cases")
+    check(len(reports) == 4 and cases.keys() == LANDINGS.keys(), "Expected four distinct drag/bank cases")
     reference = reports[0]
     for r in reports:
         label = (r["drag"], r["bank_up"])
@@ -150,6 +160,19 @@ def verify(reports):
               f"{label}: unexpected replay protocol")
         check(r["final_ground"] and r["final_speed_m_s"] < 1 and r["final_fuel_kg"] > 25,
               f"{label}: did not settle with fuel remaining")
+        expected_lon, expected_lat, expected_speed = LANDINGS[label]
+        contact = r["first_contact"]
+        speed_error = abs(contact["airspeed_m_s"] - expected_speed)
+        check(r["main_seconds"] < contact["seconds"] and speed_error <= CONTACT_TOLERANCE_M_S,
+              f"{label}: unexpected first contact {contact}, expected "
+              f"{expected_speed} ± {CONTACT_TOLERANCE_M_S} m/s after main deployment")
+        lon, lat = r["coordinates_lon_lat_deg"]
+        check(math.isfinite(lon) and -90 <= lat <= 90, f"{label}: invalid splashdown coordinates")
+        lon1, lat1, lon2, lat2 = map(math.radians, (lon, lat, expected_lon, expected_lat))
+        cosine = math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(lon1 - lon2)
+        error_km = 6371 * math.acos(max(-1.0, min(1.0, cosine)))
+        check(error_km <= LANDING_RADIUS_KM,
+              f"{label}: splashdown {error_km:.1f} km from reference (maximum {LANDING_RADIUS_KM} km)")
         sign = 1 if r["bank_up"] else -1
         check(sign * r["mean_radial_lift_g"] > 0, f"{label}: bank reversed the expected lift direction")
 
@@ -159,12 +182,6 @@ def verify(reports):
     check(cases["fixed", True]["peak_aerodynamic_g"] < 8, "Combined peak outside replay range")
     check(cases["original", True]["drogue_seconds"] > 2 * cases["fixed", True]["drogue_seconds"],
           "Correcting axial drag no longer advances drogue deployment with lift banked upward")
-    # The low peak in the bank-only trial accompanies a much longer trajectory.
-    lon1, lat1 = map(math.radians, cases["original", True]["coordinates_lon_lat_deg"])
-    lon2, lat2 = map(math.radians, cases["fixed", True]["coordinates_lon_lat_deg"])
-    cosine = math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(lon1 - lon2)
-    separation_km = 6371 * math.acos(max(-1.0, min(1.0, cosine)))
-    check(separation_km > 5000, "Corrected-bank splashdown positions converged unexpectedly")
     for bank in (False, True):
         fixed, old = (cases[d, bank]["first_drag"] for d in ("fixed", "original"))
         check(fixed["seconds"] == old["seconds"] == STEP and fixed["drag_N"] > 5 * old["drag_N"],

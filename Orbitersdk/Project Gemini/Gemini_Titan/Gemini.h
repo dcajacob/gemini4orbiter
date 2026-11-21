@@ -2016,22 +2016,33 @@ void Gemini::RestoreParachute(VESSEL2 *vessel, bool main)
     if (state==0) state=5;
     double &proc=main ? chute_proc : drogue_proc;
     if (state==5) proc=1.0;
-    double fraction=1.0;
-    if (state==1) fraction=0.0;
-    if (state==2) fraction=.12*proc;
-    if (state==3) fraction=.12;
-    if (state==4) fraction=.12+.88*proc;
     vessel->SetSize(main ? 12 : 9);
-    vessel->SetCrossSections(_V(2.8,2.8,(main ? GEMINI_CHUTE_MAIN : GEMINI_CHUTE_DROGUE)*fraction));
-    vessel->SetCW(.1,1.5,.3,.3);
+    // DeployMain inherits the capsule's CW until the opening canopy reaches
+    // the reefed state. DeployDrogue sets the chute CW immediately.
+    if (!main || state >= CHUTE_REEFED)
+        vessel->SetCW(.1, 1.5, .3, .3);
+
+    // Deploy and OpenChute/OpenDrogue leave the capsule area in place until
+    // the first inflation step. Both canopies follow the same area schedule.
+    if (state >= CHUTE_OPENING && !(state == CHUTE_OPENING && proc == .01)) {
+        double fraction = 1.0;
+        if (state == CHUTE_OPENING) fraction = .12 * proc;
+        if (state == CHUTE_REEFED || (state == CHUTE_UNREEFING && proc == .12)) fraction = .12;
+        else if (state == CHUTE_UNREEFING) fraction = .12 + .88 * proc;
+        const double area = main ? GEMINI_CHUTE_MAIN : GEMINI_CHUTE_DROGUE;
+        vessel->SetCrossSections(_V(2.8, 2.8, area * fraction));
+    }
+    const bool endOfAnimation = proc == 1.0 && (state == CHUTE_OPENING || state == CHUTE_UNREEFING);
     if (main) {
         vessel->ClearMeshes();AddGeminiCapsule(vessel,false);AddChute(vessel);
         chute_status=static_cast<ChuteStatus>(state);
         chute_moving=state>=2 && state<=4;vchute_proc=proc;
+        chute_endanim = endOfAnimation;
     } else {
         vessel->SetLiftCoeffFunc(0);
         drogue_status=static_cast<DrogueStatus>(state);
         drogue_moving=state>=2 && state<=4;vdrogue_proc=proc;
+        drogue_endanim = endOfAnimation;
     }
     if (state>=2 && state<=4) vessel->RegisterAnimation();
 }

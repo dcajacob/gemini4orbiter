@@ -4,33 +4,60 @@ This branch ports the original Gemini/Titan II, Agena target vehicle, EVA astron
 ejected crew and beacon modules to native Linux x86-64. It uses the real Orbiter
 vessel API, OpenGL renderer and native XRSound plugin. Wine is not used.
 
-The original Visual Studio projects remain available. The native build uses CMake:
+## Build the qualified Linux integration
+
+Start in the root of the Gemini checkout. Set `work` to an empty directory on your
+build disk. The fixed engine uses the published integration base and this
+checkout's `Native/orbiter-integration.patch`. The patch includes Gemini vessel
+admission, staging, exterior visibility and the legacy axial drag fix.
+[Exact Orbiter engine base](https://github.com/dcajacob/orbiter-cross-platform/commit/0702cca393b81b2dcc4722b6de3e905eeae91256).
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
-  -DORBITER_NATIVE_SOURCE_DIR=/path/to/matching/orbiter-source \
-  -DORBITER_NATIVE_BUILD_DIR=/path/to/matching/orbiter-build
-cmake --build build
+gemini=$(pwd -P)
+work=/absolute/path/to/build-directory
+engine="$work/orbiter"
+mkdir -p "$work"
+git clone --depth=1 --single-branch --branch codex/gemini-viii-opengl-integration-base \
+  https://github.com/dcajacob/orbiter-cross-platform.git "$engine"
+git -C "$engine" switch --detach 0702cca393b81b2dcc4722b6de3e905eeae91256
+# The cockpit build reads original Dragonfly sources from this historical commit.
+git -C "$engine" fetch --depth=1 origin f725194209634f7fd5d1d44d426cfa9b5e303e37
+git -C "$engine" apply --index "$gemini/Native/orbiter-integration.patch"
+test "$(git -C "$engine" write-tree)" = b456599a4a71b01f62387a6fa50da47514217504
 ```
 
-The matching Orbiter build must have native vessels, celestial modules, cockpit,
-OpenGL and XRSound enabled. Modules retain Orbiter's SDK fingerprint and C++ ABI
-checks. Copying these libraries into an independently built SDK is unsupported;
-rebuild the add-on against that SDK instead.
-
-`orbiter-integration.patch` records the complete engine delta used for qualification,
-against Orbiter commit `0702cca393b81b2dcc4722b6de3e905eeae91256` from our OpenGL
-checkout. It includes original-vessel admission, initial exterior visibility and
-staging/input fixes inherited from the Mercury integration. The engine changes
-are MIT-licensed, under Orbiter's existing license. Apply the patch to that exact
-source revision before building the engine and renderer. `prepare-engine.py` is an
-alternative narrow admission update for a newer engine that already has those
-shared fixes; do not apply both to the same source.
-
-To overlay matching binaries on a complete stock native runtime:
+The tree ID covers every tracked file in the fixed engine used for the four
+entry comparisons. Build Orbiter, its OpenGL renderer and the Gemini modules
+with the same configuration. The renderer needs the Linux OpenGL and X11
+development packages. The dependency helper downloads and verifies its pinned
+source archives.
 
 ```sh
-python3 Native/install-runtime.py /path/to/orbiter-build /path/to/gemini-build /path/to/runtime
+cmake -S "$engine/Src/Orbiter/Production" -B "$work/engine-build" -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
+  -DORBITER_BUILD_NATIVE_VESSELS=ON -DORBITER_BUILD_NATIVE_CELESTIAL_MODULES=ON \
+  -DORBITER_BUILD_NATIVE_COCKPIT=ON
+cmake --build "$work/engine-build"
+python3 "$engine/Tests/Production/NativeScene/dependencies.py" --cache "$work/ogl-deps"
+cmake -S "$engine/OVP/OGLClient/Native" -B "$work/renderer-build" -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DORBITER_ENGINE_BUILD="$work/engine-build" \
+  -DORBITER_RENDERER_DEPENDENCIES="$work/ogl-deps"
+cmake --build "$work/renderer-build"
+cmake -S "$gemini" -B "$work/gemini-build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DORBITER_NATIVE_SOURCE_DIR="$engine" -DORBITER_NATIVE_BUILD_DIR="$work/engine-build"
+cmake --build "$work/gemini-build"
+```
+
+The Gemini module carries the parachute save/restore logic. Build it from the
+Gemini revision you want to fly. Its SDK and C++ ABI must match the engine.
+The engine source patch is MIT-licensed under Orbiter's existing license.
+The original Visual Studio projects remain available.
+
+Overlay the resulting binaries and Gemini assets onto a complete stock native
+runtime with its launcher, celestial data and planetary archives.
+
+```sh
+python3 Native/install-runtime.py "$work/engine-build" "$work/gemini-build" /path/to/runtime
 python3 Native/stage-assets.py /path/to/runtime
 ```
 

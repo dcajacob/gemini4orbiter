@@ -24,8 +24,9 @@ Measured milestones:
 ## Launch
 
 Start `./launch-orbiter` from the packaged native runtime. Choose **Gemini VIII -
-Native Flight**. All 22 saves are ordinary manual-flight checkpoints with the
-automated pilot removed. Space resumes the initial pause. The sunlit **09 braking-
+Native Flight**. The 22 flight checkpoints are ordinary manual-flight saves with the
+automated pilot removed. The supplemental **20a Main canopy inflating** checkpoint
+loads the same spacecraft state as the mid-inflation replay fixture. Space resumes the initial pause. The sunlit **09 braking-
 point** checkpoint has an Earth-facing exterior view. Docking and recovery occur
 at night, so their unlit exterior views are dark. F1 switches cockpit/exterior.
 
@@ -127,14 +128,24 @@ bank and drag case the largest load came **after** drogue deployment. The model
 recorded surface contact for all four runs. It provides no crew-survival
 qualification.
 
-To reproduce, stage two separate Gemini-capable runtimes from the same source
-and assets. Use the integration source described in [the build notes](../../README.md)
-and its Gemini patch for the fixed engine. For the control build, restore the
-`vd_forw*fabs(vnorm.z)` axial term in `Vessel::UpdateAerodynamicForces_OLD`
-before building. Build the renderer and Gemini modules against the corresponding
-engine SDK for each runtime. The qualified integration snapshot is available
-in the local `out/gemini-native/engine-source` checkout. Each runtime needs its
-own writable `resources/Script` directory.
+Stage the fixed and original-drag runtimes in separate directories using the
+same Gemini checkout and stock assets. Use the published engine base and Gemini
+integration patch for both. Each runtime needs its own writable
+`resources/Script` directory. [Engine source and build commands](../../README.md#build-the-qualified-linux-integration).
+
+For the original-drag control, start with a second checkout of the patched
+engine from those instructions. Run the following before the CMake steps, with
+`engine` pointing to that second checkout. This reverses the axial drag change
+in `Vessel.cpp` and checks the resulting tree against the original-control flight
+source. Use separate engine, renderer and Gemini build directories for this SDK.
+
+```sh
+drag_fix=63a4c112652e59d4dd703a798dc533edcaed00d0
+git -C "$engine" fetch --depth=2 origin "$drag_fix"
+git -C "$engine" diff "$drag_fix^" "$drag_fix" -- Src/Orbiter/Vessel.cpp > "$work/axial-drag.patch"
+git -C "$engine" apply --index --reverse "$work/axial-drag.patch"
+test "$(git -C "$engine" write-tree)" = 1090e4d67f141c025e4008b781c0832fd15de528
+```
 
 From the Gemini repository root, point `work` at a fresh SSD scratch directory
 and run the four cases under the private 5% audio sink.
@@ -152,3 +163,20 @@ and state evidence, deployment events and the final save for each case. Recheck
 an existing run with `python3 Native/verification/gemini8/analyze_entry.py "$work/runs"`.
 Two independent sets of four runs produced identical full-rate force and state
 files and final saves per case. [Recorded results and binary hashes](entry-comparison.json).
+
+To test save restoration during main-canopy inflation, use the fixed runtime
+containing the Gemini modules built from this checkout. Run from the Gemini
+repository root after the four-case comparison. The checker compares the resumed
+flight with the uninterrupted fixed-drag, upward-lift case. Across 64,000 steps
+the maximum airborne drag difference was 0.0444 N, and the maximum difference
+including surface contact was 0.711 N. Touchdown occurred on the same physics
+step in both runs. [Replay measurements and hashes](inflation-replay.json).
+
+```sh
+Native/verification/quiet.sh "$work/inflation-audio" \
+  python3 Native/verification/gemini8/runner.py /path/to/fixed-runtime \
+  "$work/inflation-resume" Native/verification/gemini8/fixtures/mid-inflation.scn \
+  --seconds 2000 --step .03125
+python3 Native/verification/gemini8/check_inflation.py \
+  "$work/runs/fixed-bank-up" "$work/inflation-resume"
+```
