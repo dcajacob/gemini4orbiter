@@ -207,7 +207,10 @@ bash Native/verification/quiet.sh "$work/audio" \
 The same PR job also flies the 22 mission phases in order. It starts at the pad
 in the original Gemini VIII scenario. After each phase Orbiter writes a new
 save, which supplies the epoch and spacecraft state for the next pilot. The
-check reads live telemetry and saved vessel state for orbital insertion, closing
+linked runner uses the finite-burn solver in `orbit.py` (NumPy/SciPy) to target the
+transfer, corrections and braking burn from the flown states of Gemini and Agena.
+The pilot executes them with OAMS. Each computed target is archived in
+`burn-plan.json`. The check reads live telemetry and saved vessel state for orbital insertion, closing
 range and speed, mutual Agena docking, undocking, retrofire, atmospheric entry,
 both parachutes and Pacific splashdown. The artifact includes the measured phase
 results in `mission/mission.json` and the actual input and output saves.

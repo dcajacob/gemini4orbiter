@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 LAUNCH = ROOT.parents[2] / "Scenarios/Earth 1962/Gemini VIII.scn"
 
 
-def fly_phase(runtime, case, fixture, source):
+def fly_phase(runtime, case, fixture, source, linked=False):
     record = json.loads((fixture / "record.json").read_text())
     case.mkdir(parents=True, exist_ok=True)
     scenario = re.sub(r"^[ \t]*Script .*\n", "", source.read_text(), flags=re.M)
@@ -25,7 +25,14 @@ def fly_phase(runtime, case, fixture, source):
         target = runtime / "resources/Script" / f"{script}.lua"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.unlink(missing_ok=True)
-        shutil.copy2(pilot, target)
+        if linked:
+            # The Lua pilot flies the vessel without pilot-facing MFDs.
+            scenario = re.sub(r"^BEGIN_MFD[^\n]*\n.*?^END_MFD\n", "", scenario, flags=re.M | re.S)
+        if linked and fixture.name[:2] in {"02", "03", "04", "06", "08", "10"}:
+            from mission_guidance import pilot_source
+            target.write_text(pilot_source(fixture, case, source, record))
+        else:
+            shutil.copy2(pilot, target)
     (case / "input.scn").write_text(scenario)
     shutil.copy2(fixture / "replay.csv", case / "replay.csv")
     ticks = round(record["seconds"] / record["step"])
@@ -81,7 +88,7 @@ def main():
             continue
         fixture = ROOT / "fixtures" / phase
         case = args.output.resolve() / phase
-        source = fly_phase(args.runtime.resolve(), case, fixture, source if args.linked else fixture / "input.scn")
+        source = fly_phase(args.runtime.resolve(), case, fixture, source if args.linked else fixture / "input.scn", args.linked)
         if args.linked:
             report.append(validate_phase(case, record))
             (args.output / "mission.json").write_text(json.dumps(report, indent=2) + "\n")

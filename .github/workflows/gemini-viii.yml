@@ -28,7 +28,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config \
-            git ca-certificates curl python3 unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
+            git ca-certificates curl python3-scipy unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
             xorg-dev libwayland-dev wayland-protocols libxkbcommon-dev libglx-mesa0 libgl1-mesa-dri \
             xvfb xauth pulseaudio pulseaudio-utils fonts-dejavu-core
       - uses: actions/checkout@v7
@@ -91,7 +91,7 @@ jobs:
               [[ -d "$phase" ]] || continue
               dest="evidence/mission/$(basename "$phase")"
               mkdir -p "$dest"
-              for file in input.scn saved.scn pilot-docked.txt; do
+              for file in input.scn saved.scn pilot-docked.txt burn-plan.json; do
                 if [[ -f "$phase/$file" ]]; then cp "$phase/$file" "$dest/"; fi
               done
               if [[ -f "$phase/console.log" ]]; then tail -c 32768 "$phase/console.log" > "$dest/console.log"; fi
