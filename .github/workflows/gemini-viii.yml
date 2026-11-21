@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   replay:
-    name: Mid-inflation drag through splashdown
+    name: Gemini VIII mission and mid-inflation drag
     runs-on: ubuntu-24.04
     container: ubuntu:26.04
     timeout-minutes: 90
@@ -55,6 +55,11 @@ jobs:
           mkdir -p "$RUNNER_TEMP/pulse-home"
           HOME="$RUNNER_TEMP/pulse-home" bash Native/verification/quiet.sh "$PWD/evidence/audio" \
             python3 Native/verification/gemini8/replay_inflation.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/flights"
+      - name: Fly the linked Gemini VIII mission from launch through recovery
+        run: |
+          python3 Native/verification/gemini8/verify.py
+          HOME="$RUNNER_TEMP/pulse-home" bash Native/verification/quiet.sh "$PWD/evidence/mission-audio" \
+            python3 Native/verification/gemini8/replay.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/mission" --linked --compact
       - name: Collect results and diagnostics
         if: always()
         run: |
@@ -68,6 +73,29 @@ jobs:
               cat evidence/comparison.json
               echo ' ```'
             } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          mission="$RUNNER_TEMP/mission"
+          if [[ -d "$mission" ]]; then
+            mkdir -p evidence/mission
+            if [[ -f "$mission/mission.json" ]]; then
+              cp "$mission/mission.json" evidence/mission/
+              python3 - "$mission/mission.json" >> "$GITHUB_STEP_SUMMARY" <<'PYTHON'
+          import json, sys
+          rows = json.load(open(sys.argv[1]))
+          print(f"### Gemini VIII mission — {len(rows)} of 22 phases verified")
+          for row in rows:
+              print(f"- {row['phase']}")
+          PYTHON
+            fi
+            for phase in "$mission"/*/; do
+              [[ -d "$phase" ]] || continue
+              dest="evidence/mission/$(basename "$phase")"
+              mkdir -p "$dest"
+              for file in input.scn saved.scn pilot-docked.txt; do
+                if [[ -f "$phase/$file" ]]; then cp "$phase/$file" "$dest/"; fi
+              done
+              if [[ -f "$phase/console.log" ]]; then tail -c 32768 "$phase/console.log" > "$dest/console.log"; fi
+            done
           fi
           for case in fixed-bank-up mid-inflation; do
             if [[ -d "$flights/$case" ]]; then

@@ -203,3 +203,19 @@ To repeat the comparison with a staged runtime, use a new output directory:
 bash Native/verification/quiet.sh "$work/audio" \
   python3 Native/verification/gemini8/replay_inflation.py "$runtime" "$work/flights"
 ```
+
+The same PR job also flies the 22 mission phases in order. It starts at the pad
+in the original Gemini VIII scenario. After each phase Orbiter writes a new
+save, which supplies the epoch and spacecraft state for the next pilot. The
+check reads live telemetry and saved vessel state for orbital insertion, closing
+range and speed, mutual Agena docking, undocking, retrofire, atmospheric entry,
+both parachutes and Pacific splashdown. The artifact includes the measured phase
+results in `mission/mission.json` and the actual input and output saves.
+
+```sh
+bash Native/verification/quiet.sh "$work/mission-audio" \
+  python3 Native/verification/gemini8/replay.py "$runtime" "$work/mission" --linked
+```
+
+Use a fresh mission directory. CI adds `--compact` to discard large telemetry
+files after each phase passes its checks.
