@@ -3,6 +3,8 @@ name: Gemini VIII native OpenGL
 on:
   pull_request:
     branches: [codex/native-linux-opengl]
+  push:
+    tags: ['gemini-viii-linux-opengl-*']
   workflow_dispatch:
 
 permissions:
@@ -10,10 +12,11 @@ permissions:
 
 concurrency:
   group: gemini-inflation-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 jobs:
   replay:
+    if: github.event_name != 'push' || !github.event.deleted
     name: Gemini VIII mission and mid-inflation drag
     runs-on: ubuntu-24.04
     container: ubuntu:26.04
@@ -28,12 +31,26 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config \
-            git ca-certificates curl python3-scipy unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
+            git ca-certificates curl rsync python3-scipy unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
             xorg-dev libwayland-dev wayland-protocols libxkbcommon-dev libglx-mesa0 libgl1-mesa-dri \
             xvfb xauth x11-utils libxtst6 libqt6widgets6 libqt6gui6 libxcb-cursor0 qt6-qpa-plugins pulseaudio pulseaudio-utils fonts-dejavu-core
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          fetch-depth: 2
+      - name: Select release packaging
+        id: package
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [[ "$EVENT" != pull_request ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          elif git diff --quiet HEAD^1 HEAD -- .github/native-linux .github/workflows/gemini-viii.yml; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v7
         with:
           repository: dcajacob/orbiter-cross-platform
@@ -131,3 +148,47 @@ jobs:
           name: gemini-viii-inflation-${{ github.run_attempt }}
           path: evidence/
           retention-days: 14
+
+      - name: Package the verified runtime and check the split archive
+        if: success() && steps.package.outputs.enabled == 'true'
+        run: |
+          # The drag comparison has consumed these multi-GB telemetry files.
+          find "$RUNNER_TEMP/flights" -name '*.csv' -type f -delete
+          bash .github/native-linux/packaging/package.sh "$RUNNER_TEMP/runtime" "$PWD/evidence" "$PWD/release-assets"
+          cat "$PWD/release-assets/"*.tar.zst.sha256 >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: success() && github.event_name == 'push' && github.ref_type == 'tag'
+        with:
+          name: verified-gemini-release
+          path: release-assets/
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
+          retention-days: 1
+
+  publish:
+    name: Publish verified tag
+    needs: replay
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/native-linux/packaging
+      - uses: actions/download-artifact@v8
+        with:
+          name: verified-gemini-release
+          path: release-assets
+      - name: Verify transferred assets and publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd release-assets
+          sha256sum -c SHA256SUMS.parts
+          cat *.tar.zst.part[0-9][0-9] | sha256sum | diff - <(sed 's/  .*/  -/' *.tar.zst.sha256)
+          python3 "$GITHUB_WORKSPACE/.github/native-linux/packaging/publish.py" "$PWD"

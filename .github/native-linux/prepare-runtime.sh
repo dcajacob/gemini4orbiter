@@ -11,7 +11,10 @@ fetch() {
 # Use the release Qt Launchpad with the engine, renderer and vessels built by this job.
 fetch "$assets/nassp-native-ci-inputs-v1.tar.zst" inputs.tar.zst \
     26d5891ea54a01ab8d007bed3ab2e9f5ed46ff8cd315921c57ca0e334faf37bd
-tar --zstd -xf inputs.tar.zst ./runtime/{resources,celestial-data,planet-archives,Orbiter.cfg,orbiter-profile.json,launch-orbiter,engine/run-orbiter,engine/orbiter-launchpad}
+# Gemini's scenarios are installed by stage-assets.py. The shared data archive
+# also contains Apollo mission assets which do not belong in a Gemini release.
+tar --zstd --exclude='./runtime/resources/Scenarios' --exclude='./runtime/resources/*/ProjectApollo' \
+    -xf inputs.tar.zst ./runtime/{licenses,resources,celestial-data,planet-archives,Orbiter.cfg,orbiter-profile.json,launch-orbiter,engine/run-orbiter,engine/orbiter-launchpad}
 echo '7ef4246f664107354932ffa09795e469aa259ce66b5214cd1af188e0974a0231  runtime/engine/orbiter-launchpad' | sha256sum -c -
 mkdir -p runtime/user/Scenarios
 rm inputs.tar.zst
