@@ -8,10 +8,12 @@ fetch() {
     curl --fail --location --retry 3 --output "$2" "$1"
     printf '%s  %s\n' "$3" "$2" | sha256sum -c -
 }
-# Only import data, settings and the two shell launchers from the stock fixture.
+# Use the release Qt Launchpad with the engine, renderer and vessels built by this job.
 fetch "$assets/nassp-native-ci-inputs-v1.tar.zst" inputs.tar.zst \
     26d5891ea54a01ab8d007bed3ab2e9f5ed46ff8cd315921c57ca0e334faf37bd
-tar --zstd -xf inputs.tar.zst ./runtime/{resources,celestial-data,planet-archives,Orbiter.cfg,launch-orbiter,engine/run-orbiter}
+tar --zstd -xf inputs.tar.zst ./runtime/{resources,celestial-data,planet-archives,Orbiter.cfg,orbiter-profile.json,launch-orbiter,engine/run-orbiter,engine/orbiter-launchpad}
+echo '7ef4246f664107354932ffa09795e469aa259ce66b5214cd1af188e0974a0231  runtime/engine/orbiter-launchpad' | sha256sum -c -
+mkdir -p runtime/user/Scenarios
 rm inputs.tar.zst
 sed -i '/^ACTIVE_MODULES$/,/^END_MODULES$/d' runtime/Orbiter.cfg
 fetch "$assets/nassp-native-ci-terrain-v1.tar.zst" terrain.tar.zst \

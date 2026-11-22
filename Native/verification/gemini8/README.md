@@ -222,3 +222,17 @@ bash Native/verification/quiet.sh "$work/mission-audio" \
 
 Use a fresh mission directory. CI adds `--compact` to discard large telemetry
 files after each phase passes its checks.
+
+### Normal launcher checks
+
+The PR job opens all 23 manual saves from the November 21 Gemini VIII Linux
+release through the normal Qt Launchpad. It stages the release fixtures in a
+disposable runtime, checks their SHA-256 values, selects each as the last
+scenario in isolated launcher settings, and clicks Launch. Each simulator
+session must load the PR-built native engine, Gemini, Agena, OpenGL, and XRSound,
+resize, resume, quicksave at a later epoch, and exit. The docking, mid-inflation,
+and splashdown quicksaves also have vessel-state checks.
+
+The tests use Xvfb and a private 5% PulseAudio null sink. The workflow summary
+lists every save. The artifact contains per-save results in
+`launcher/results.json`, quicksaves, simulator logs, and the audio level.
