@@ -24,7 +24,9 @@ dragonfly=f725194209634f7fd5d1d44d426cfa9b5e303e37
     git diff --exit-code -- Src/Orbiter/Vessel.cpp Src/Orbiter/Vessel.h
 )
 export CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
-flags=(-G Ninja -DCMAKE_BUILD_TYPE=Release)
+# Use these same relocatable binaries for flight, launcher checks and distribution.
+flags=(-G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+       '-DCMAKE_INSTALL_RPATH=$ORIGIN;$ORIGIN/..;$ORIGIN/../..;$ORIGIN/native-lua')
 python3 "$orbiter/Tests/Production/NativeScene/dependencies.py" --cache "$work/deps"
 cmake -S "$orbiter/Src/Orbiter/Production" -B "$work/engine" "${flags[@]}" \
     -DBUILD_TESTING=OFF -DORBITER_BUILD_NATIVE_VESSELS=ON \

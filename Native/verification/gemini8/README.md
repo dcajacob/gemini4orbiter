@@ -236,3 +236,17 @@ and splashdown quicksaves also have vessel-state checks.
 The tests use Xvfb and a private 5% PulseAudio null sink. The workflow summary
 lists every save. The artifact contains per-save results in
 `launcher/results.json`, quicksaves, simulator logs, and the audio level.
+
+### Tagged releases
+
+Push a new tag matching `gemini-viii-linux-opengl-*` on the native OpenGL
+revision to release. The tag reruns the build, linked mission, drag comparison
+and all 23 Qt launcher checks. After they pass, the workflow packages that
+runtime and compares the reassembled archive against the staging tree. A
+tag-only job verifies the uploaded asset digests before publishing the GitHub
+Release. The release includes numbered archive parts, part and whole-archive
+SHA-256 files, launch instructions and per-save launcher results.
+
+Changes to the workflow or its CI scripts exercise packaging in pull requests.
+A manual workflow run also exercises packaging. Only a matching tag push
+publishes a release.
