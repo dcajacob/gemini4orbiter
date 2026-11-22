@@ -30,7 +30,7 @@ jobs:
           apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config \
             git ca-certificates curl python3-scipy unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
             xorg-dev libwayland-dev wayland-protocols libxkbcommon-dev libglx-mesa0 libgl1-mesa-dri \
-            xvfb xauth pulseaudio pulseaudio-utils fonts-dejavu-core
+            xvfb xauth x11-utils libxtst6 libqt6widgets6 libqt6gui6 libxcb-cursor0 qt6-qpa-plugins pulseaudio pulseaudio-utils fonts-dejavu-core
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -49,6 +49,7 @@ jobs:
           git -C orbiter-source rev-parse HEAD > evidence/orbiter-commit.txt
           bash .github/native-linux/build.sh orbiter-source "$RUNNER_TEMP"
       - name: Stage verified runtime assets
+        id: runtime
         run: bash .github/native-linux/prepare-runtime.sh "$RUNNER_TEMP"
       - name: Fly both entries and compare every physics step
         run: |
@@ -60,10 +61,27 @@ jobs:
           python3 Native/verification/gemini8/verify.py
           HOME="$RUNNER_TEMP/pulse-home" bash Native/verification/quiet.sh "$PWD/evidence/mission-audio" \
             python3 Native/verification/gemini8/replay.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/mission" --linked --compact
+      - name: Launch all 23 released saves through the Qt Launchpad
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/launcher-home"
+          HOME="$RUNNER_TEMP/launcher-home" bash Native/verification/quiet.sh "$PWD/evidence/launcher-audio" \
+            python3 Native/verification/gemini8/launcher.py "$RUNNER_TEMP/runtime" "$PWD/evidence/launcher"
       - name: Collect results and diagnostics
         if: always()
         run: |
           mkdir -p evidence
+          if [[ -f evidence/launcher/results.json ]]; then
+            python3 - >> "$GITHUB_STEP_SUMMARY" <<'PYTHON'
+          import json
+          from pathlib import Path
+          checks = json.loads(Path("evidence/launcher/results.json").read_text())
+          passed = sum(row["result"] == "passed" for row in checks)
+          print(f"### Qt launcher — {passed}/23 Gemini VIII saves passed")
+          for row in checks:
+              print(f"- {row['scenario']} — {row['result']}")
+          PYTHON
+          fi
           flights="$RUNNER_TEMP/flights"
           if [[ -f "$flights/comparison.json" ]]; then
             cp "$flights/comparison.json" evidence/
