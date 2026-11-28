@@ -31,7 +31,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config \
-            git ca-certificates curl rsync python3-scipy python3-pil python3-xlib unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
+            git ca-certificates curl rsync python3-scipy unzip zstd libglu1-mesa-dev libgl-dev zlib1g-dev \
             xorg-dev libwayland-dev wayland-protocols libxkbcommon-dev libglx-mesa0 libgl1-mesa-dri \
             xvfb xauth x11-utils libxtst6 libqt6widgets6 libqt6gui6 libxcb-cursor0 qt6-qpa-plugins pulseaudio pulseaudio-utils fonts-dejavu-core
       - uses: actions/checkout@v7
@@ -80,7 +80,10 @@ jobs:
             python3 Native/verification/gemini8/replay.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/mission" --linked --compact
       - name: Launch all 23 saves and check the braking-point Earth view
         if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
+          apt-get install -y --no-install-recommends python3-pil python3-xlib
           mkdir -p "$RUNNER_TEMP/launcher-home"
           HOME="$RUNNER_TEMP/launcher-home" bash Native/verification/quiet.sh "$PWD/evidence/launcher-audio" \
             python3 Native/verification/gemini8/launcher.py "$RUNNER_TEMP/runtime" "$PWD/evidence/launcher"
