@@ -26,9 +26,10 @@ Measured milestones:
 Start `./launch-orbiter` from the packaged native runtime. Choose **Gemini VIII -
 Native Flight**. The 22 flight checkpoints are ordinary manual-flight saves with the
 automated pilot removed. The supplemental **20a Main canopy inflating** checkpoint
-loads the same spacecraft state as the mid-inflation replay fixture. Space resumes the initial pause. The sunlit **09 braking-
-point** checkpoint has an Earth-facing exterior view. Docking and recovery occur
-at night, so their unlit exterior views are dark. F1 switches cockpit/exterior.
+loads the same spacecraft state as the mid-inflation replay fixture. Space resumes
+the initial pause. **09 braking-point** opens in exterior view with Gemini above
+the sunlit Earth and the curved horizon. Press F1 for the cockpit. Docking and
+recovery occur at night, so their unlit exterior views are dark.
 
 Alt+1 through Alt+7 selects the original seven-position attitude selector; Alt+5
 is DIRECT and Alt+7 is passive HORSCAN. Numpad controls attitude/translation;
@@ -225,13 +226,16 @@ files after each phase passes its checks.
 
 ### Normal launcher checks
 
-The PR job opens all 23 manual saves from the November 21 Gemini VIII Linux
-release through the normal Qt Launchpad. It stages the release fixtures in a
-disposable runtime, checks their SHA-256 values, selects each as the last
+The PR job opens all 23 manual saves through the normal Qt Launchpad.
+It stages the fixtures in a disposable runtime, checks their SHA-256 values, selects each as the last
 scenario in isolated launcher settings, and clicks Launch. Each simulator
 session must load the PR-built native engine, Gemini, Agena, OpenGL, and XRSound,
 resize, resume, quicksave at a later epoch, and exit. The docking, mid-inflation,
-and splashdown quicksaves also have vessel-state checks.
+and splashdown quicksaves also have vessel-state checks. At **09 braking-point**,
+the job captures the paused simulator window before sending any flight input or
+resizing it. It checks for blue Earth and bright clouds, the capsule
+in the center, and dark space below the limb. The per-save artifact includes
+`braking-point-opening.png` for visual inspection.
 
 The tests use Xvfb and a private 5% PulseAudio null sink. The workflow summary
 lists every save. The artifact contains per-save results in

@@ -19,7 +19,8 @@ select a save, and click **Launch**. The 22 numbered saves cover the flight
 from ascent through Agena docking and Pacific recovery. **20a Main canopy
 inflating** is a separate manual mid-inflation checkpoint. To start on the pad,
 choose **Earth 1962 → Gemini VIII**. **Space** resumes a paused flight.
-**Ctrl+S** saves to `user/Scenarios`.
+**Ctrl+S** saves to `user/Scenarios`. **09 braking-point** opens with Gemini
+above the sunlit Earth and the curved horizon in view. Press **F1** for the cockpit.
 
 The tested environment is Ubuntu 26.04 x86-64 with Qt 6 Widgets, X11/XWayland,
 Mesa OpenGL and PulseAudio-compatible sound. The spacecraft manual is

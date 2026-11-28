@@ -14,6 +14,7 @@ import tempfile
 import time
 
 from analyze_entry import check
+from braking_view import check_braking_view
 from mission import ship_state
 
 RELEASE = Path(__file__).with_name("release-saves")
@@ -178,6 +179,10 @@ def exercise(runtime, scenario, case, config):
             launch_selected(gui)
             window, title = wait_window("| GEMINI | PAUSED", gui)
             proc = verify_child(gui, runtime, scenario)
+            result = {}
+            if scenario.name == "09 braking-point.scn":
+                check("PAUSED t=0.000s" in title, "Expected braking point at its saved epoch")
+                result["opening_view_fractions"] = check_braking_view(window, case / "braking-point-opening.png")
             xlib.XResizeWindow(display, window, 1180, 720)
             xlib.XFlush(display)
             time.sleep(.75)
@@ -186,7 +191,7 @@ def exercise(runtime, scenario, case, config):
             keys(window, 0x0020)  # Space resumes the selected save.
             _, running = wait_window("| GEMINI | RUNNING", gui)
             keys(window, 0xffe3, 0x0073)  # Ctrl+S
-            result = verify_quicksave(scenario, save)
+            result.update(verify_quicksave(scenario, save))
             close(window)
             for attempt in range(240):
                 if not proc.exists():
