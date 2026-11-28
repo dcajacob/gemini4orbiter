@@ -78,9 +78,12 @@ jobs:
           python3 Native/verification/gemini8/verify.py
           HOME="$RUNNER_TEMP/pulse-home" bash Native/verification/quiet.sh "$PWD/evidence/mission-audio" \
             python3 Native/verification/gemini8/replay.py "$RUNNER_TEMP/runtime" "$RUNNER_TEMP/mission" --linked --compact
-      - name: Launch all 23 released saves through the Qt Launchpad
+      - name: Launch all 23 saves and check the braking-point Earth view
         if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
+          apt-get install -y --no-install-recommends python3-pil python3-xlib
           mkdir -p "$RUNNER_TEMP/launcher-home"
           HOME="$RUNNER_TEMP/launcher-home" bash Native/verification/quiet.sh "$PWD/evidence/launcher-audio" \
             python3 Native/verification/gemini8/launcher.py "$RUNNER_TEMP/runtime" "$PWD/evidence/launcher"
